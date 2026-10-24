@@ -50,7 +50,7 @@
                         <span class="text-[10px] font-bold uppercase tracking-widest text-orange-200">SHINE WITH NOOR</span>
                     </div>
                     <h1 class="text-base md:text-lg font-black tracking-wide font-arabic">شركة النور المتحدة للوقود و النقليات</h1>
-                    <p class="text-[11px] text-slate-300 font-medium">Al Noor United Fuel & Transport Co. — Multi-Tier Warehouse Routing</p>
+                    <p class="text-[11px] text-slate-300 font-medium">Al Noor United Fuel & Transport Co. — Regional Warehouse ERP</p>
                 </div>
             </div>
 
@@ -82,7 +82,7 @@
                     <i class="fa-solid fa-sun animate-spin" style="animation-duration: 25s;"></i>
                 </div>
                 <h2 class="text-2xl font-black text-noor-800 tracking-tight">Department Portal</h2>
-                <p class="text-xs text-slate-500 mt-1">Sign in with department credentials (Case-Insensitive)</p>
+                <p class="text-xs text-slate-500 mt-1">Sign in with regional warehouse or department credentials</p>
             </div>
 
             <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-5">
@@ -90,7 +90,7 @@
                     <label class="block text-xs font-bold text-slate-700 mb-1.5">User ID / Email</label>
                     <div class="relative">
                         <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-400"><i class="fa-solid fa-user"></i></span>
-                        <input type="text" id="loginEmail" required placeholder="e.g. workshop@noor.com.sa" 
+                        <input type="text" id="loginEmail" required placeholder="e.g. main.wh@noor.com.sa" 
                             class="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-300 rounded-2xl text-sm focus:ring-2 focus:ring-noor-500 focus:bg-white focus:outline-none transition">
                     </div>
                 </div>
@@ -129,7 +129,7 @@
                         <select id="statusFilter" onchange="renderDashboard()" class="px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-2xl text-xs font-medium focus:outline-none focus:ring-2 focus:ring-noor-500">
                             <option value="ALL">All Documents</option>
                             <option value="Initiated">Initiated (Level 1)</option>
-                            <option value="In Process">In Process (Availability / Review)</option>
+                            <option value="In Process">In Process (Warehouse / Review)</option>
                             <option value="Approved">Approved (Ready for Dispatch)</option>
                             <option value="Closed">Closed (Completed)</option>
                             <option value="Rejected">Rejected</option>
@@ -165,7 +165,7 @@
                 <div class="p-5 border-b border-slate-200/80 bg-slate-50/50 flex justify-between items-center">
                     <h3 class="font-bold text-noor-800 text-sm flex items-center space-x-2">
                         <i class="fa-solid fa-table-list text-noor-500"></i>
-                        <span>Transaction & Multi-Tier Availability Audit Logs</span>
+                        <span>Regional Warehouse & Multi-Tier Audit Logs</span>
                     </h3>
                     <span id="recordCount" class="text-xs font-bold bg-orange-100 text-noor-700 px-3.5 py-1.5 rounded-full">0 Records</span>
                 </div>
@@ -175,10 +175,10 @@
                             <tr class="bg-noor-800 text-white text-[11px] uppercase tracking-wider">
                                 <th class="p-4">Doc ID</th>
                                 <th class="p-4">Date</th>
-                                <th class="p-4">Department</th>
-                                <th class="p-4">Form Type & Purpose / الطلب</th>
-                                <th class="p-4">Items Count</th>
-                                <th class="p-4">Current Status</th>
+                                <th class="p-4">Department & Issue To</th>
+                                <th class="p-4">Selected Warehouse</th>
+                                <th class="p-4">Form Type & Purpose</th>
+                                <th class="p-4">Status</th>
                                 <th class="p-4">Last Approval Stage & Approver</th>
                                 <th class="p-4 text-center">Actions</th>
                             </tr>
@@ -211,17 +211,32 @@
             </div>
 
             <form id="activeRequisitionForm" onsubmit="submitFormRequisition(event)" class="space-y-6">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 bg-slate-50 p-5 rounded-2xl border border-slate-200/80">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 bg-slate-50 p-5 rounded-2xl border border-slate-200/80">
                     <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1.5">الجهة الطالبة (Requesting Department)</label>
+                        <label class="block text-xs font-bold text-slate-700 mb-1.5">الجهة الطالبة (Department)</label>
                         <input type="text" id="formDept" readonly 
                             class="w-full px-4 py-2.5 bg-slate-200/80 border border-slate-300 rounded-xl text-xs font-bold text-slate-700 cursor-not-allowed">
                     </div>
                     <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1.5">الطلب لأجل / البيان (Purpose / Remarks)</label>
-                        <input type="text" id="formPurpose" required placeholder="e.g. Spare parts for Truck #402 or Office supplies" 
-                            class="w-full px-4 py-2.5 bg-white border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-noor-500 focus:bg-white focus:outline-none transition">
+                        <label class="block text-xs font-bold text-slate-700 mb-1.5">إصدار من المستودع (Issue From Warehouse)</label>
+                        <select id="formWarehouse" required class="w-full px-4 py-2.5 bg-white border border-slate-300 rounded-xl text-xs font-bold text-slate-700 focus:ring-2 focus:ring-noor-500 focus:outline-none">
+                            <option value="Main Warehouse">Main Warehouse</option>
+                            <option value="Southern Region Warehouse">Southern Region Warehouse</option>
+                            <option value="Eastern Region Warehouse">Eastern Region Warehouse</option>
+                            <option value="Hail Region Warehouse">Hail Region Warehouse</option>
+                        </select>
                     </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1.5">صرف إلى / المحطة أو الورشة (Issue To: Station / Workshop)</label>
+                        <input type="text" id="formIssueTo" required placeholder="e.g. Najran Fuel Station / Riyadh Workshop" 
+                            class="w-full px-4 py-2.5 bg-white border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-noor-500 focus:outline-none">
+                    </div>
+                </div>
+
+                <div class="bg-slate-50 px-5 py-3 rounded-2xl border border-slate-200/80">
+                    <label class="block text-xs font-bold text-slate-700 mb-1">الطلب لأجل / البيان (Purpose / Remarks)</label>
+                    <input type="text" id="formPurpose" required placeholder="e.g. Spare parts for Truck #402 or Office supplies" 
+                        class="w-full px-4 py-2.5 bg-white border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-noor-500 focus:outline-none">
                 </div>
 
                 <div>
@@ -258,8 +273,8 @@
                         <div class="h-8 flex items-center justify-center text-slate-400 italic text-[11px]">Initiated</div>
                     </div>
                     <div class="bg-slate-50 p-4 rounded-2xl border border-dashed border-slate-300">
-                        <p class="font-bold text-slate-800 mb-1">2. أمين المخزن (Availability Check)</p>
-                        <div class="h-8 flex items-center justify-center text-slate-400 italic text-[11px]">Pending Stock Check</div>
+                        <p class="font-bold text-slate-800 mb-1">2. أمين المستودع المختار (Warehouse Check)</p>
+                        <div class="h-8 flex items-center justify-center text-slate-400 italic text-[11px]">Pending Regional WH</div>
                     </div>
                     <div class="bg-slate-50 p-4 rounded-2xl border border-dashed border-slate-300">
                         <p class="font-bold text-slate-800 mb-1" id="routingManagerSignLabel">3. المسؤول المختص (Manager Review)</p>
@@ -326,11 +341,17 @@
 
     <!-- JAVASCRIPT SYSTEM LOGIC -->
     <script>
-        // Users DB including Warehouse (wh@noor.com.sa), Accounting, Maintenance Manager, and Admin
+        // Users DB including Regional Warehouses
         let usersDb = JSON.parse(localStorage.getItem('noor_users')) || {
             "req@noor.com.sa": { pass: "Noor@123", role: "Requesting", dept: "Service Department", canChangePass: false },
             "workshop@noor.com.sa": { pass: "Noor@123", role: "Requesting", dept: "Transport Workshop", canChangePass: true, workshopOnly: true },
-            "wh@noor.com.sa": { pass: "Noor@123", role: "Warehouse", dept: "Warehouse Department", canChangePass: true },
+            
+            // Regional Warehouse Users
+            "main.wh@noor.com.sa": { pass: "Noor@123", role: "Warehouse", dept: "Main Warehouse", warehouseName: "Main Warehouse", canChangePass: true },
+            "south.wh@noor.com.sa": { pass: "Noor@123", role: "Warehouse", dept: "Southern Region Warehouse", warehouseName: "Southern Region Warehouse", canChangePass: true },
+            "east.wh@noor.com.sa": { pass: "Noor@123", role: "Warehouse", dept: "Eastern Region Warehouse", warehouseName: "Eastern Region Warehouse", canChangePass: true },
+            "hail.wh@noor.com.sa": { pass: "Noor@123", role: "Warehouse", dept: "Hail Region Warehouse", warehouseName: "Hail Region Warehouse", canChangePass: true },
+
             "account@noor.com.sa": { pass: "Noor@123", role: "Accounting", dept: "Accounting Department", canChangePass: true },
             "maintenance@noor.com.sa": { pass: "Noor@123", role: "MaintenanceManager", dept: "Maintenance Manager", canChangePass: true },
             "saif.ali@noor.com.sa": { pass: "72724@Noor", role: "AdminDeleteAll", dept: "System Administrator", canChangePass: true }
@@ -482,7 +503,6 @@
                             `;
                         }
                     } else {
-                        // For Warehouse, Accounting, Maintenance Manager
                         warehouseMenuContainer.classList.add('hidden');
                     }
                 }
@@ -512,11 +532,16 @@
                 filtered = requests.filter(r => r.status === filter);
             }
 
+            // If user is a regional warehouse, show only requests assigned to their warehouse
+            if (currentUser && currentUser.role === 'Warehouse') {
+                filtered = filtered.filter(r => r.warehouse === currentUser.warehouseName);
+            }
+
             const recordCount = document.getElementById('recordCount');
             if (recordCount) recordCount.innerText = `${filtered.length} Records`;
 
             if (filtered.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="8" class="text-center py-8 text-slate-400 italic">No document records found.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="8" class="text-center py-8 text-slate-400 italic">No document records found for your regional warehouse.</td></tr>`;
                 return;
             }
 
@@ -535,9 +560,12 @@
                 tr.innerHTML = `
                     <td class="p-4 font-bold text-noor-800">${req.id}</td>
                     <td class="p-4 text-slate-600">${req.date}</td>
-                    <td class="p-4 font-medium">${req.department}</td>
+                    <td class="p-4 font-medium">
+                        ${req.department}<br>
+                        <span class="text-[10px] text-slate-400">Issue To: ${req.issueTo}</span>
+                    </td>
+                    <td class="p-4 font-semibold text-noor-700">${req.warehouse}</td>
                     <td class="p-4 text-slate-600 truncate max-w-xs">${req.purpose} <br><span class="text-[10px] text-orange-600 font-semibold">[${req.formType}]</span></td>
-                    <td class="p-4 text-center">${req.items.length} items</td>
                     <td class="p-4"><span class="px-3 py-1 rounded-full text-[11px] font-bold ${badgeColor}">${req.status}</span></td>
                     <td class="p-4 text-[11px] text-slate-600">
                         <span class="font-semibold text-slate-800">${req.lastStage}</span><br>
@@ -636,10 +664,14 @@
             e.preventDefault();
             const purposeInput = document.getElementById('formPurpose');
             const formModalTitle = document.getElementById('formModalTitle');
+            const warehouseSelect = document.getElementById('formWarehouse');
+            const issueToInput = document.getElementById('formIssueTo');
 
-            if (!purposeInput || !formModalTitle || !currentUser) return;
+            if (!purposeInput || !formModalTitle || !currentUser || !warehouseSelect || !issueToInput) return;
 
             const purpose = purposeInput.value;
+            const warehouse = warehouseSelect.value;
+            const issueTo = issueToInput.value;
             const formTitle = formModalTitle.innerText.split('(')[0].trim();
             const routingTarget = (currentUser.email.toLowerCase() === 'req@noor.com.sa') ? 'Accounting' : 'MaintenanceManager';
             
@@ -663,15 +695,17 @@
                 id: `DOC-2026-${String(requests.length + 1).padStart(3, '0')}`,
                 date: new Date().toISOString().split('T')[0],
                 department: currentUser.dept,
+                warehouse: warehouse,
+                issueTo: issueTo,
                 routingTarget: routingTarget,
                 purpose: purpose,
                 formType: formTitle,
                 items: items,
                 status: "In Process",
-                lastStage: `Initiated by ${currentUser.dept} -> Pending Warehouse Availability Check`,
+                lastStage: `Initiated by ${currentUser.dept} -> Pending ${warehouse} Stock Check`,
                 approverName: currentUser.email,
                 history: [
-                    { stage: "Initiated", by: currentUser.email, date: new Date().toLocaleString(), note: `Form created & routed to Warehouse for stock availability check.` }
+                    { stage: "Initiated", by: currentUser.email, date: new Date().toLocaleString(), note: `Form created & routed to ${warehouse} for stock availability check.` }
                 ]
             };
 
@@ -679,7 +713,7 @@
             localStorage.setItem('noor_requests', JSON.stringify(requests));
             closeFormModal();
             renderDashboard();
-            alert(`Document ${newDoc.id} successfully created and sent to Warehouse for availability check (Level 2).`);
+            alert(`Document ${newDoc.id} successfully created and sent to ${warehouse} for availability check (Level 2).`);
         }
 
         function deleteRequest(id) {
@@ -700,7 +734,7 @@
             const modalReqTitle = document.getElementById('modalReqTitle');
             const modalReqMeta = document.getElementById('modalReqMeta');
             if (modalReqTitle) modalReqTitle.innerText = `${req.formType}: ${req.id} (${req.department})`;
-            if (modalReqMeta) modalReqMeta.innerText = `Created on: ${req.date} | Purpose: ${req.purpose} | Target Reviewer: ${req.routingTarget || 'N/A'}`;
+            if (modalReqMeta) modalReqMeta.innerText = `Created on: ${req.date} | Warehouse: ${req.warehouse} | Issue To: ${req.issueTo} | Purpose: ${req.purpose}`;
 
             let itemsHtml = `
                 <div class="bg-slate-50 p-4 rounded-2xl mb-4 border border-slate-200">
@@ -749,42 +783,37 @@
                 if (notesContainer) notesContainer.classList.add('hidden');
                 actionHtml = `<span class="text-xs font-bold text-slate-500">Administrator Mode: You can delete this document from the main table if needed.</span>`;
             } else if (req.status !== 'Closed' && req.status !== 'Rejected') {
-                let isWarehouse = (currentUser && currentUser.role === 'Warehouse');
+                let isRegionalWarehouse = (currentUser && currentUser.role === 'Warehouse' && req.warehouse === currentUser.warehouseName);
                 let isAssignedReviewer = (currentUser && currentUser.role === 'Accounting' && req.routingTarget === 'Accounting') || 
                                          (currentUser && currentUser.role === 'MaintenanceManager' && req.routingTarget === 'MaintenanceManager');
 
-                // Check stage: 
-                // If lastStage includes 'Initiated', Warehouse must check availability first (Level 2).
-                // If lastStage includes 'Availability Checked', Department Manager (Accounting or Maintenance) approves (Level 3).
-                // If lastStage includes 'Approved', Warehouse finalizes and closes.
-
-                let isWarehouseAvailabilityStage = isWarehouse && req.lastStage.includes('Initiated');
+                let isWarehouseAvailabilityStage = isRegionalWarehouse && req.lastStage.includes('Initiated');
                 let isManagerReviewStage = isAssignedReviewer && req.lastStage.includes('Availability Checked');
-                let isWarehouseFinalStage = isWarehouse && req.lastStage.includes('Approved by');
+                let isWarehouseFinalStage = isRegionalWarehouse && req.lastStage.includes('Approved by');
 
                 if (isWarehouseAvailabilityStage) {
                     if (notesContainer) notesContainer.classList.remove('hidden');
                     actionHtml = `
-                        <button onclick="processApproval('${req.id}', 'Reject', 'Warehouse')" class="px-4.5 py-2.5 bg-red-600 text-white rounded-2xl text-xs font-bold hover:bg-red-700 shadow-md">Reject (Out of Stock)</button>
-                        <button onclick="processApproval('${req.id}', 'StockAvailable', 'Warehouse')" class="px-5 py-2.5 bg-emerald-600 text-white rounded-2xl text-xs font-bold hover:bg-emerald-700 shadow-md">Confirm Stock Available & Forward to Manager (Level 2)</button>
+                        <button onclick="processApproval('${req.id}', 'Reject', '${currentUser.dept}')" class="px-4.5 py-2.5 bg-red-600 text-white rounded-2xl text-xs font-bold hover:bg-red-700 shadow-md">Reject (Out of Stock)</button>
+                        <button onclick="processApproval('${req.id}', 'StockAvailable', '${currentUser.dept}')" class="px-5 py-2.5 bg-emerald-600 text-white rounded-2xl text-xs font-bold hover:bg-emerald-700 shadow-md">Confirm Stock Available & Forward to Manager (Level 2)</button>
                     `;
                 } else if (isManagerReviewStage) {
                     if (notesContainer) notesContainer.classList.remove('hidden');
                     actionHtml = `
                         <button onclick="processApproval('${req.id}', 'Reject', '${currentUser.dept}')" class="px-4.5 py-2.5 bg-red-600 text-white rounded-2xl text-xs font-bold hover:bg-red-700 shadow-md">Reject Document</button>
-                        <button onclick="processApproval('${req.id}', 'ApproveReviewer', '${currentUser.dept}')" class="px-5 py-2.5 bg-emerald-600 text-white rounded-2xl text-xs font-bold hover:bg-emerald-700 shadow-md">Approve & Forward to Warehouse (Level 3)</button>
+                        <button onclick="processApproval('${req.id}', 'ApproveReviewer', '${currentUser.dept}')" class="px-5 py-2.5 bg-emerald-600 text-white rounded-2xl text-xs font-bold hover:bg-emerald-700 shadow-md">Approve & Forward to ${req.warehouse} (Level 3)</button>
                     `;
                 } else if (isWarehouseFinalStage) {
                     if (notesContainer) notesContainer.classList.remove('hidden');
                     actionHtml = `
-                        <button onclick="processApproval('${req.id}', 'Reject', 'Warehouse')" class="px-4.5 py-2.5 bg-red-600 text-white rounded-2xl text-xs font-bold hover:bg-red-700 shadow-md">Reject Document</button>
-                        <button onclick="processApproval('${req.id}', 'Close', 'Warehouse')" class="px-5 py-2.5 bg-noor-800 text-white rounded-2xl text-xs font-bold hover:bg-slate-900 shadow-md">Finalize Dispatch & Close Document (Final Level)</button>
+                        <button onclick="processApproval('${req.id}', 'Reject', '${currentUser.dept}')" class="px-4.5 py-2.5 bg-red-600 text-white rounded-2xl text-xs font-bold hover:bg-red-700 shadow-md">Reject Document</button>
+                        <button onclick="processApproval('${req.id}', 'Close', '${currentUser.dept}')" class="px-5 py-2.5 bg-noor-800 text-white rounded-2xl text-xs font-bold hover:bg-slate-900 shadow-md">Finalize Dispatch & Close Document (Final Level)</button>
                     `;
                 } else {
                     if (notesContainer) notesContainer.classList.add('hidden');
-                    let waitingMsg = req.lastStage.includes('Initiated') ? "Awaiting Warehouse Availability Check..." :
+                    let waitingMsg = req.lastStage.includes('Initiated') ? `Awaiting ${req.warehouse} Stock Availability Check...` :
                                      req.lastStage.includes('Availability Checked') ? `Awaiting Department Manager Review (${req.routingTarget})...` :
-                                     "Awaiting Warehouse Final Dispatch...";
+                                     `Awaiting ${req.warehouse} Final Dispatch...`;
                     actionHtml = `<span class="text-xs text-slate-400 italic">${waitingMsg}</span>`;
                 }
             } else {
@@ -813,19 +842,19 @@
 
             if (action === 'StockAvailable') {
                 req.status = 'In Process';
-                req.lastStage = 'Availability Checked by Warehouse -> Pending Department Manager Review';
+                req.lastStage = `Availability Checked by ${deptRole} -> Pending Manager Review`;
                 req.approverName = currentUser.email;
-                req.history.push({ stage: "Warehouse Availability Check", by: currentUser.email, date: timestamp, note: `Stock confirmed available. ${noteText}` });
+                req.history.push({ stage: `${deptRole} Availability Check`, by: currentUser.email, date: timestamp, note: `Stock confirmed available. ${noteText}` });
             } else if (action === 'ApproveReviewer') {
                 req.status = 'Approved';
-                req.lastStage = `Approved by ${deptRole} -> Ready for Warehouse Dispatch`;
+                req.lastStage = `Approved by ${deptRole} -> Ready for ${req.warehouse} Dispatch`;
                 req.approverName = currentUser.email;
                 req.history.push({ stage: `${deptRole} Approval`, by: currentUser.email, date: timestamp, note: noteText });
             } else if (action === 'Close') {
                 req.status = 'Closed';
-                req.lastStage = 'Closed & Dispatched by Warehouse (Final)';
+                req.lastStage = `Closed & Dispatched by ${req.warehouse} (Final)`;
                 req.approverName = currentUser.email;
-                req.history.push({ stage: "Warehouse Dispatch / Closed", by: currentUser.email, date: timestamp, note: noteText });
+                req.history.push({ stage: `${req.warehouse} Dispatch / Closed`, by: currentUser.email, date: timestamp, note: noteText });
             } else if (action === 'Rejected' || action === 'Reject') {
                 req.status = 'Rejected';
                 req.lastStage = `Rejected by ${deptRole}`;
@@ -878,7 +907,7 @@
 
         function exportTableToCSV() {
             let csv = [];
-            let headers = ["Document ID", "Date", "Department", "Form Type", "Purpose", "Items Count", "Status", "Last Approval Stage", "Approver"];
+            let headers = ["Document ID", "Date", "Department", "Issue To", "Warehouse", "Form Type", "Purpose", "Items Count", "Status", "Last Approval Stage", "Approver"];
             csv.push(headers.join(","));
 
             requests.forEach(r => {
@@ -886,6 +915,8 @@
                     r.id,
                     r.date,
                     `"${r.department}"`,
+                    `"${r.issueTo}"`,
+                    `"${r.warehouse}"`,
                     `"${r.formType}"`,
                     `"${r.purpose}"`,
                     r.items.length,
