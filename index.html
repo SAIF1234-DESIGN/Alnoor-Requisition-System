@@ -38,7 +38,7 @@
 
     <!-- Top Header -->
     <header class="bg-noor-800 text-white shadow-md border-b-4 border-noor-500">
-        <div class="max-w-7xl mx-auto px-4 py-3 flex flex-col md:flex-row justify-between items-center">
+        <div class="max-w-7xl mx-auto px-6 py-3.5 flex flex-col md:flex-row justify-between items-center gap-4">
             <div class="flex items-center space-x-4">
                 <div id="headerLogoContainer" class="w-12 h-12 bg-gradient-to-tr from-noor-500 to-amber-400 rounded-full flex items-center justify-center text-white shadow-lg relative overflow-hidden ring-2 ring-white/20">
                     <i id="headerLogoIcon" class="fa-solid fa-sun text-2xl animate-spin" style="animation-duration: 20s;"></i>
@@ -55,16 +55,16 @@
             </div>
 
             <!-- User Session Box -->
-            <div id="userSessionHeader" class="hidden mt-3 md:mt-0 flex items-center space-x-4">
+            <div id="userSessionHeader" class="hidden flex items-center space-x-4">
                 <div class="text-right">
-                    <span id="displayUserRole" class="block text-[11px] font-bold uppercase tracking-wider text-orange-300 bg-black/30 px-2.5 py-0.5 rounded-full"></span>
-                    <span id="displayUserId" class="text-xs font-semibold text-slate-200"></span>
+                    <span id="displayUserRole" class="block text-[11px] font-bold uppercase tracking-wider text-orange-300 bg-black/30 px-3 py-1 rounded-full"></span>
+                    <span id="displayUserId" class="text-xs font-semibold text-slate-200 mt-0.5 block"></span>
                 </div>
-                <button id="passwordChangeBtn" onclick="openPasswordModal()" class="hidden text-xs bg-white/10 hover:bg-white/20 text-white font-medium px-3 py-1.5 rounded border border-white/20 transition flex items-center space-x-1.5">
+                <button id="passwordChangeBtn" onclick="openPasswordModal()" class="hidden text-xs bg-white/10 hover:bg-white/20 text-white font-medium px-3.5 py-2 rounded-xl border border-white/20 transition flex items-center space-x-1.5 shadow-sm">
                     <i class="fa-solid fa-key"></i>
                     <span>Password</span>
                 </button>
-                <button onclick="logout()" class="text-xs bg-red-600/80 hover:bg-red-700 text-white font-medium px-3 py-1.5 rounded transition flex items-center space-x-1.5">
+                <button onclick="logout()" class="text-xs bg-red-600/90 hover:bg-red-700 text-white font-medium px-3.5 py-2 rounded-xl transition flex items-center space-x-1.5 shadow-sm">
                     <i class="fa-solid fa-right-from-bracket"></i>
                     <span>Logout</span>
                 </button>
@@ -73,43 +73,43 @@
     </header>
 
     <!-- Main Content Body -->
-    <main class="max-w-7xl mx-auto px-4 py-8 flex-grow w-full">
+    <main class="max-w-7xl mx-auto px-6 py-10 flex-grow w-full">
 
         <!-- LOGIN VIEW -->
-        <div id="loginView" class="max-w-md mx-auto bg-white rounded-2xl shadow-xl border border-slate-200 p-8 mt-6">
-            <div class="text-center mb-6">
-                <div class="w-16 h-16 bg-gradient-to-tr from-noor-500 to-amber-400 text-white rounded-full flex items-center justify-center mx-auto mb-3 shadow-md text-2xl ring-4 ring-orange-100">
+        <div id="loginView" class="max-w-md mx-auto bg-white rounded-3xl shadow-2xl border border-slate-200/80 p-8 md:p-10 mt-6">
+            <div class="text-center mb-8">
+                <div class="w-16 h-16 bg-gradient-to-tr from-noor-500 to-amber-400 text-white rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg text-2xl ring-4 ring-orange-100">
                     <i class="fa-solid fa-sun animate-spin" style="animation-duration: 25s;"></i>
                 </div>
-                <h2 class="text-2xl font-bold text-noor-800">Department Portal</h2>
+                <h2 class="text-2xl font-black text-noor-800 tracking-tight">Department Portal</h2>
                 <p class="text-xs text-slate-500 mt-1">Sign in with department credentials (Case-Insensitive)</p>
             </div>
 
-            <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-4">
+            <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-5">
                 <div>
-                    <label class="block text-xs font-bold text-slate-700 mb-1">User ID / Email</label>
+                    <label class="block text-xs font-bold text-slate-700 mb-1.5">User ID / Email</label>
                     <div class="relative">
-                        <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400"><i class="fa-solid fa-user"></i></span>
-                        <input type="text" id="loginEmail" required placeholder="e.g. req@noor.com.sa" 
-                            class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:ring-2 focus:ring-noor-500 focus:bg-white focus:outline-none transition">
+                        <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-400"><i class="fa-solid fa-user"></i></span>
+                        <input type="text" id="loginEmail" required placeholder="e.g. workshop@noor.com.sa" 
+                            class="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-300 rounded-2xl text-sm focus:ring-2 focus:ring-noor-500 focus:bg-white focus:outline-none transition">
                     </div>
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-slate-700 mb-1">Password</label>
+                    <label class="block text-xs font-bold text-slate-700 mb-1.5">Password</label>
                     <div class="relative">
-                        <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400"><i class="fa-solid fa-lock"></i></span>
+                        <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-400"><i class="fa-solid fa-lock"></i></span>
                         <input type="password" id="loginPassword" required placeholder="••••••••" 
-                            class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:ring-2 focus:ring-noor-500 focus:bg-white focus:outline-none transition">
+                            class="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-300 rounded-2xl text-sm focus:ring-2 focus:ring-noor-500 focus:bg-white focus:outline-none transition">
                     </div>
                 </div>
-                <button type="submit" class="w-full bg-gradient-to-r from-noor-500 to-amber-500 hover:from-noor-600 hover:to-amber-600 text-white font-bold py-3 rounded-xl shadow-lg transition duration-200 flex items-center justify-center space-x-2">
+                <button type="submit" class="w-full bg-gradient-to-r from-noor-500 to-amber-500 hover:from-noor-600 hover:to-amber-600 text-white font-bold py-3.5 rounded-2xl shadow-lg shadow-orange-500/20 transition duration-200 flex items-center justify-center space-x-2">
                     <span>Secure Sign In</span>
                     <i class="fa-solid fa-arrow-right-to-bracket"></i>
                 </button>
             </form>
 
-            <div class="mt-6 pt-4 border-t border-slate-100 text-center">
-                <label class="cursor-pointer text-[11px] text-noor-600 hover:underline font-semibold inline-flex items-center space-x-1">
+            <div class="mt-8 pt-6 border-t border-slate-100 text-center">
+                <label class="cursor-pointer text-xs text-noor-600 hover:text-noor-700 font-bold inline-flex items-center space-x-1.5 bg-orange-50 px-4 py-2 rounded-xl transition">
                     <i class="fa-solid fa-upload"></i>
                     <span>Upload Custom Company Logo</span>
                     <input type="file" id="logoUploadInput" accept="image/*" onchange="handleLogoUpload(event)" class="hidden">
@@ -121,12 +121,12 @@
         <div id="dashboardView" class="hidden space-y-6">
             
             <!-- Action Bar -->
-            <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 flex flex-col lg:flex-row justify-between items-center gap-4">
+            <div class="bg-white p-5 rounded-3xl shadow-sm border border-slate-200/80 flex flex-col lg:flex-row justify-between items-center gap-4">
                 
-                <div class="flex flex-wrap items-center gap-3 w-full lg:w-auto">
-                    <div class="flex items-center space-x-2">
-                        <span class="text-xs font-bold text-slate-600">Status:</span>
-                        <select id="statusFilter" onchange="renderDashboard()" class="px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs font-medium focus:outline-none focus:ring-2 focus:ring-noor-500">
+                <div class="flex flex-wrap items-center gap-4 w-full lg:w-auto">
+                    <div class="flex items-center space-x-2.5">
+                        <span class="text-xs font-bold text-slate-600">Filter Status:</span>
+                        <select id="statusFilter" onchange="renderDashboard()" class="px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-2xl text-xs font-medium focus:outline-none focus:ring-2 focus:ring-noor-500">
                             <option value="ALL">All Documents</option>
                             <option value="Initiated">Initiated (Level 1)</option>
                             <option value="In Process">In Process (Review)</option>
@@ -138,39 +138,22 @@
                 </div>
 
                 <div class="flex flex-wrap items-center gap-3 w-full lg:w-auto justify-end">
-                    <!-- Warehouse Form Library Dropdown (Hidden for Admin Delete-All user) -->
+                    <!-- Warehouse Form Library Dropdown -->
                     <div id="warehouseMenuContainer" class="relative">
-                        <button onclick="toggleWarehouseMenu()" class="bg-gradient-to-r from-noor-500 to-amber-500 hover:from-noor-600 hover:to-amber-600 text-white font-bold px-4 py-2 rounded-xl text-xs shadow transition flex items-center space-x-2">
+                        <button onclick="toggleWarehouseMenu()" class="bg-gradient-to-r from-noor-500 to-amber-500 hover:from-noor-600 hover:to-amber-600 text-white font-bold px-5 py-2.5 rounded-2xl text-xs shadow-md shadow-orange-500/20 transition flex items-center space-x-2">
                             <i class="fa-solid fa-folder-plus"></i>
-                            <span>Warehouse Forms Library (Extended)</span>
+                            <span id="warehouseMenuBtnText">Warehouse Forms Library</span>
                             <i class="fa-solid fa-chevron-down text-[10px]"></i>
                         </button>
-                        <div id="warehouseMenu" class="hidden absolute right-0 mt-2 w-80 bg-white rounded-xl shadow-2xl border border-slate-200 z-50 py-2">
-                            <div class="px-3 py-1.5 text-[11px] font-bold text-slate-400 uppercase tracking-wider border-b">Select Form to Issue</div>
-                            <button onclick="openFormModal('Material Requisition')" class="w-full text-left px-4 py-2.5 text-xs text-slate-700 hover:bg-orange-50 hover:text-noor-600 flex items-center space-x-2">
-                                <i class="fa-solid fa-file-invoice text-noor-500 w-5"></i>
-                                <span>أمر صرف مواد من المخزن (Material Requisition)</span>
-                            </button>
-                            <button onclick="openFormModal('Stock Receipt')" class="w-full text-left px-4 py-2.5 text-xs text-slate-700 hover:bg-orange-50 hover:text-noor-600 flex items-center space-x-2">
-                                <i class="fa-solid fa-boxes-stacked text-noor-500 w-5"></i>
-                                <span>إيصال استلام مواد للمخزن (Goods Receipt Note)</span>
-                            </button>
-                            <button onclick="openFormModal('Stock Transfer')" class="w-full text-left px-4 py-2.5 text-xs text-slate-700 hover:bg-orange-50 hover:text-noor-600 flex items-center space-x-2">
-                                <i class="fa-solid fa-truck-ramp-box text-noor-500 w-5"></i>
-                                <span>سند تحويل بين المستودعات (Stock Transfer)</span>
-                            </button>
-                            <button onclick="openFormModal('Custody Bond')" class="w-full text-left px-4 py-2.5 text-xs text-slate-700 hover:bg-orange-50 hover:text-noor-600 flex items-center space-x-2">
-                                <i class="fa-solid fa-hand-holding-hand text-noor-500 w-5"></i>
-                                <span>سند عهدة مواد / معدات (Custody Bond Form)</span>
-                            </button>
-                            <button onclick="openFormModal('Inventory Audit')" class="w-full text-left px-4 py-2.5 text-xs text-slate-700 hover:bg-orange-50 hover:text-noor-600 flex items-center space-x-2">
-                                <i class="fa-solid fa-clipboard-check text-noor-500 w-5"></i>
-                                <span>محضر جرد المخزن (Stock Audit Sheet)</span>
-                            </button>
+                        <div id="warehouseMenu" class="hidden absolute right-0 mt-2 w-80 bg-white rounded-2xl shadow-2xl border border-slate-200 z-50 py-2 overflow-hidden">
+                            <div class="px-4 py-2 text-[11px] font-bold text-slate-400 uppercase tracking-wider border-b bg-slate-50">Select Form to Issue</div>
+                            <div id="warehouseMenuOptions">
+                                <!-- Populated dynamically based on user role -->
+                            </div>
                         </div>
                     </div>
 
-                    <button onclick="exportTableToCSV()" class="bg-slate-800 hover:bg-slate-900 text-white font-medium px-4 py-2 rounded-xl text-xs transition flex items-center space-x-2">
+                    <button onclick="exportTableToCSV()" class="bg-slate-800 hover:bg-slate-900 text-white font-medium px-4.5 py-2.5 rounded-2xl text-xs transition flex items-center space-x-2 shadow-sm">
                         <i class="fa-solid fa-download"></i>
                         <span>Download CSV</span>
                     </button>
@@ -178,26 +161,26 @@
             </div>
 
             <!-- Master Requests Table -->
-            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-                <div class="p-4 border-b border-slate-200 bg-slate-50 flex justify-between items-center">
+            <div class="bg-white rounded-3xl shadow-sm border border-slate-200/80 overflow-hidden">
+                <div class="p-5 border-b border-slate-200/80 bg-slate-50/50 flex justify-between items-center">
                     <h3 class="font-bold text-noor-800 text-sm flex items-center space-x-2">
                         <i class="fa-solid fa-table-list text-noor-500"></i>
                         <span>Transaction & Multi-Tier Approval Audit Logs</span>
                     </h3>
-                    <span id="recordCount" class="text-xs font-bold bg-orange-100 text-noor-700 px-3 py-1 rounded-full">0 Records</span>
+                    <span id="recordCount" class="text-xs font-bold bg-orange-100 text-noor-700 px-3.5 py-1.5 rounded-full">0 Records</span>
                 </div>
                 <div class="overflow-x-auto">
                     <table class="w-full text-left border-collapse">
                         <thead>
                             <tr class="bg-noor-800 text-white text-[11px] uppercase tracking-wider">
-                                <th class="p-3">Doc ID</th>
-                                <th class="p-3">Date</th>
-                                <th class="p-3">Department</th>
-                                <th class="p-3">Form Type & Purpose / الطلب</th>
-                                <th class="p-3">Items Count</th>
-                                <th class="p-3">Current Status</th>
-                                <th class="p-3">Last Approval Stage & Approver</th>
-                                <th class="p-3 text-center">Actions</th>
+                                <th class="p-4">Doc ID</th>
+                                <th class="p-4">Date</th>
+                                <th class="p-4">Department</th>
+                                <th class="p-4">Form Type & Purpose / الطلب</th>
+                                <th class="p-4">Items Count</th>
+                                <th class="p-4">Current Status</th>
+                                <th class="p-4">Last Approval Stage & Approver</th>
+                                <th class="p-4 text-center">Actions</th>
                             </tr>
                         </thead>
                         <tbody id="requestsTableBody" class="divide-y divide-slate-100 text-xs">
@@ -211,55 +194,55 @@
     </main>
 
     <!-- FOOTER -->
-    <footer class="bg-white border-t border-slate-200 py-4 mt-12 text-center text-xs text-slate-500">
+    <footer class="bg-white border-t border-slate-200/80 py-5 mt-12 text-center text-xs text-slate-500">
         &copy; 2026 Al Noor United Fuel & Transport Co. (شركة النور المتحدة للوقود و النقليات). All rights reserved.
     </footer>
 
     <!-- DYNAMIC FORM MODAL -->
-    <div id="formModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center p-4 overflow-y-auto">
-        <div class="bg-white rounded-2xl shadow-2xl max-w-5xl w-full max-h-[90vh] overflow-y-auto p-6 md:p-8 border-t-4 border-noor-500">
+    <div id="formModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-white rounded-3xl shadow-2xl max-w-5xl w-full max-h-[92vh] overflow-y-auto p-6 md:p-8 border-t-8 border-noor-500">
             
-            <div class="flex justify-between items-start border-b pb-4 mb-4">
+            <div class="flex justify-between items-start border-b pb-4 mb-6">
                 <div>
                     <h3 id="formModalTitle" class="text-xl font-black text-noor-800 font-arabic">أمر صرف مواد من المخزن</h3>
-                    <p id="formModalSubtitle" class="text-xs text-slate-500">Al Noor United Official Warehouse Document</p>
+                    <p id="formModalSubtitle" class="text-xs text-slate-500 mt-0.5">Al Noor United Official Warehouse Document</p>
                 </div>
-                <button onclick="closeFormModal()" class="text-slate-400 hover:text-slate-600 font-bold text-xl p-2">&times;</button>
+                <button onclick="closeFormModal()" class="text-slate-400 hover:text-slate-600 font-bold text-xl p-2 rounded-xl hover:bg-slate-100 transition">&times;</button>
             </div>
 
             <form id="activeRequisitionForm" onsubmit="submitFormRequisition(event)" class="space-y-6">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 bg-slate-50 p-4 rounded-xl border border-slate-200">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 bg-slate-50 p-5 rounded-2xl border border-slate-200/80">
                     <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">الجهة الطالبة (Requesting Department)</label>
+                        <label class="block text-xs font-bold text-slate-700 mb-1.5">الجهة الطالبة (Requesting Department)</label>
                         <input type="text" id="formDept" readonly 
-                            class="w-full px-3 py-2 bg-slate-200 border border-slate-300 rounded-xl text-xs font-bold text-slate-700 cursor-not-allowed">
+                            class="w-full px-4 py-2.5 bg-slate-200/80 border border-slate-300 rounded-xl text-xs font-bold text-slate-700 cursor-not-allowed">
                     </div>
                     <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">الطلب لأجل / البيان (Purpose / Remarks)</label>
+                        <label class="block text-xs font-bold text-slate-700 mb-1.5">الطلب لأجل / البيان (Purpose / Remarks)</label>
                         <input type="text" id="formPurpose" required placeholder="e.g. Spare parts for Truck #402 or Office supplies" 
-                            class="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-noor-500 focus:outline-none">
+                            class="w-full px-4 py-2.5 bg-white border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-noor-500 focus:outline-none transition">
                     </div>
                 </div>
 
                 <div>
-                    <div class="flex justify-between items-center mb-2">
+                    <div class="flex justify-between items-center mb-3">
                         <label class="text-xs font-black text-noor-800 uppercase font-arabic">الأصناف المطلوبة (Items / Assets List)</label>
-                        <button type="button" onclick="addItemRow()" class="text-xs bg-orange-100 text-noor-700 px-3 py-1.5 rounded-xl font-bold hover:bg-orange-200 transition flex items-center space-x-1">
+                        <button type="button" onclick="addItemRow()" class="text-xs bg-orange-100 text-noor-700 px-3.5 py-2 rounded-xl font-bold hover:bg-orange-200 transition flex items-center space-x-1.5 shadow-sm">
                             <i class="fa-solid fa-plus"></i>
                             <span>Add Item Row</span>
                         </button>
                     </div>
-                    <div class="overflow-x-auto border border-slate-200 rounded-xl shadow-sm">
+                    <div class="overflow-x-auto border border-slate-200 rounded-2xl shadow-sm">
                         <table class="w-full text-center text-xs">
                             <thead class="bg-noor-800 text-white border-b">
                                 <tr>
-                                    <th class="p-2.5 w-12">م</th>
-                                    <th class="p-2.5" style="width: 32%;">إسم الصنف / الأداة (Item Name)</th>
-                                    <th class="p-2.5" style="width: 15%;">كود صنف (Code / Serial)</th>
-                                    <th class="p-2.5" style="width: 12%;">الوحدة (Unit)</th>
-                                    <th class="p-2.5" style="width: 12%;">الكمية (Qty)</th>
-                                    <th class="p-2.5" style="width: 22%;">ملاحظات / الحالة (Notes / Condition)</th>
-                                    <th class="p-2.5 w-10"></th>
+                                    <th class="p-3 w-12">م</th>
+                                    <th class="p-3 text-left" style="width: 35%;">إسم الصنف / الأداة (Item Name)</th>
+                                    <th class="p-3" style="width: 15%;">كود صنف (Code - Optional)</th>
+                                    <th class="p-3" style="width: 12%;">الوحدة (Unit)</th>
+                                    <th class="p-3" style="width: 12%;">الكمية (Qty)</th>
+                                    <th class="p-3 text-left" style="width: 21%;">ملاحظات / الحالة (Notes)</th>
+                                    <th class="p-3 w-10"></th>
                                 </tr>
                             </thead>
                             <tbody id="formItemsTableBody" class="divide-y divide-slate-100">
@@ -270,23 +253,23 @@
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4 border-t border-slate-200 text-center text-xs text-slate-600">
-                    <div class="bg-slate-50 p-3 rounded-xl border border-dashed border-slate-300">
-                        <p class="font-bold text-slate-800">توقيع المستلم (Receiver)</p>
-                        <div class="h-10 flex items-center justify-center text-slate-400 italic">Initiated</div>
+                    <div class="bg-slate-50 p-4 rounded-2xl border border-dashed border-slate-300">
+                        <p class="font-bold text-slate-800 mb-1">توقيع المستلم (Receiver)</p>
+                        <div class="h-8 flex items-center justify-center text-slate-400 italic text-[11px]">Initiated</div>
                     </div>
-                    <div class="bg-slate-50 p-3 rounded-xl border border-dashed border-slate-300">
-                        <p class="font-bold text-slate-800" id="routingManagerSignLabel">المسؤول المختص (Reviewer)</p>
-                        <div class="h-10 flex items-center justify-center text-slate-400 italic">Pending Review</div>
+                    <div class="bg-slate-50 p-4 rounded-2xl border border-dashed border-slate-300">
+                        <p class="font-bold text-slate-800 mb-1" id="routingManagerSignLabel">المسؤول المختص (Reviewer)</p>
+                        <div class="h-8 flex items-center justify-center text-slate-400 italic text-[11px]">Pending Review</div>
                     </div>
-                    <div class="bg-slate-50 p-3 rounded-xl border border-dashed border-slate-300">
-                        <p class="font-bold text-slate-800">أمين المخزن (Warehouse)</p>
-                        <div class="h-10 flex items-center justify-center text-slate-400 italic">Pending Warehouse</div>
+                    <div class="bg-slate-50 p-4 rounded-2xl border border-dashed border-slate-300">
+                        <p class="font-bold text-slate-800 mb-1">أمين المخزن (Warehouse)</p>
+                        <div class="h-8 flex items-center justify-center text-slate-400 italic text-[11px]">Pending Warehouse</div>
                     </div>
                 </div>
 
                 <div class="flex justify-end space-x-3 pt-4 border-t">
-                    <button type="button" onclick="closeFormModal()" class="px-5 py-2.5 border border-slate-300 rounded-xl text-xs text-slate-600 hover:bg-slate-100 transition">Cancel</button>
-                    <button type="submit" class="px-6 py-2.5 bg-gradient-to-r from-noor-500 to-amber-500 hover:from-noor-600 hover:to-amber-600 text-white rounded-xl text-xs font-bold shadow transition flex items-center space-x-2">
+                    <button type="button" onclick="closeFormModal()" class="px-5 py-3 border border-slate-300 rounded-2xl text-xs text-slate-600 hover:bg-slate-100 transition font-semibold">Cancel</button>
+                    <button type="submit" class="px-6 py-3 bg-gradient-to-r from-noor-500 to-amber-500 hover:from-noor-600 hover:to-amber-600 text-white rounded-2xl text-xs font-bold shadow-lg shadow-orange-500/20 transition flex items-center space-x-2">
                         <i class="fa-solid fa-paper-plane"></i>
                         <span>Submit Document</span>
                     </button>
@@ -296,22 +279,22 @@
     </div>
 
     <!-- VIEW & APPROVAL MODAL -->
-    <div id="viewRequestModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center p-4 overflow-y-auto">
-        <div class="bg-white rounded-2xl shadow-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto p-6 md:p-8 border-t-4 border-noor-500">
-            <div class="flex justify-between items-start border-b pb-4 mb-4">
+    <div id="viewRequestModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-white rounded-3xl shadow-2xl max-w-3xl w-full max-h-[92vh] overflow-y-auto p-6 md:p-8 border-t-8 border-noor-500">
+            <div class="flex justify-between items-start border-b pb-4 mb-6">
                 <div>
                     <h3 id="modalReqTitle" class="text-xl font-bold text-noor-800">Document Details</h3>
-                    <p id="modalReqMeta" class="text-xs text-slate-500 mt-0.5"></p>
+                    <p id="modalReqMeta" class="text-xs text-slate-500 mt-1"></p>
                 </div>
-                <button onclick="closeViewModal()" class="text-slate-400 hover:text-slate-600 font-bold text-xl p-2">&times;</button>
+                <button onclick="closeViewModal()" class="text-slate-400 hover:text-slate-600 font-bold text-xl p-2 rounded-xl hover:bg-slate-100 transition">&times;</button>
             </div>
 
             <div id="modalReqBody" class="space-y-4 text-xs"></div>
 
             <div id="approvalNotesContainer" class="mt-4 pt-4 border-t border-slate-200 hidden">
-                <label class="block text-xs font-bold text-slate-700 mb-1">Optional Approval / Rejection Notes (ملاحظات)</label>
-                <textarea id="optionalApprovalNote" rows="2" placeholder="Add any specific remarks or conditions..." 
-                    class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-noor-500 focus:outline-none"></textarea>
+                <label class="block text-xs font-bold text-slate-700 mb-1.5">Optional Approval / Rejection Notes (ملاحظات)</label>
+                <textarea id="optionalApprovalNote" rows="2.5" placeholder="Add any specific remarks or conditions..." 
+                    class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-2xl text-xs focus:ring-2 focus:ring-noor-500 focus:outline-none"></textarea>
             </div>
 
             <div id="modalActionControls" class="mt-6 pt-4 border-t flex justify-end space-x-3"></div>
@@ -319,23 +302,23 @@
     </div>
 
     <!-- PASSWORD UPDATE MODAL -->
-    <div id="passwordModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 border-t-4 border-noor-800">
+    <div id="passwordModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl shadow-2xl max-w-md w-full p-8 border-t-8 border-noor-800">
             <h3 class="text-lg font-bold text-noor-800 mb-1">Update Department Password</h3>
-            <p class="text-xs text-slate-500 mb-4">Verify your current/last remembered password to establish a new one.</p>
+            <p class="text-xs text-slate-500 mb-6">Verify your current password to establish a new one.</p>
             
-            <form onsubmit="handlePasswordUpdate(event)" class="space-y-3">
+            <form onsubmit="handlePasswordUpdate(event)" class="space-y-4">
                 <div>
-                    <label class="block text-xs font-semibold text-slate-700 mb-1">Current Password</label>
-                    <input type="password" id="currentPassInput" required class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-noor-500 focus:outline-none">
+                    <label class="block text-xs font-semibold text-slate-700 mb-1.5">Current Password</label>
+                    <input type="password" id="currentPassInput" required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-2xl text-xs focus:ring-2 focus:ring-noor-500 focus:outline-none">
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-slate-700 mb-1">New Password</label>
-                    <input type="password" id="newPassInput" required class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-noor-500 focus:outline-none">
+                    <label class="block text-xs font-semibold text-slate-700 mb-1.5">New Password</label>
+                    <input type="password" id="newPassInput" required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-noor-500 focus:outline-none">
                 </div>
-                <div class="flex justify-end space-x-2 pt-2">
-                    <button type="button" onclick="closePasswordModal()" class="px-4 py-2 border rounded-xl text-xs hover:bg-slate-100">Cancel</button>
-                    <button type="submit" class="px-5 py-2 bg-noor-800 text-white rounded-xl text-xs font-bold hover:bg-slate-900 shadow">Update Password</button>
+                <div class="flex justify-end space-x-2 pt-3">
+                    <button type="button" onclick="closePasswordModal()" class="px-4.5 py-2.5 border rounded-2xl text-xs hover:bg-slate-100 font-semibold">Cancel</button>
+                    <button type="submit" class="px-5 py-2.5 bg-noor-800 text-white rounded-2xl text-xs font-bold hover:bg-slate-900 shadow-md">Update Password</button>
                 </div>
             </form>
         </div>
@@ -343,10 +326,10 @@
 
     <!-- JAVASCRIPT SYSTEM LOGIC -->
     <script>
-        // Case-insensitive users DB including new Administrator saif.ali@noor.com.sa
+        // Case-insensitive users DB
         let usersDb = JSON.parse(localStorage.getItem('noor_users')) || {
             "req@noor.com.sa": { pass: "Noor@123", role: "Requesting", dept: "Service Department", canChangePass: false },
-            "workshop@noor.com.sa": { pass: "Noor@123", role: "Requesting", dept: "Transport Workshop", canChangePass: true },
+            "workshop@noor.com.sa": { pass: "Noor@123", role: "Requesting", dept: "Transport Workshop", canChangePass: true, workshopOnly: true },
             "account@noor.com.sa": { pass: "Noor@123", role: "Accounting", dept: "Accounting Department", canChangePass: true },
             "maintenance@noor.com.sa": { pass: "Noor@123", role: "MaintenanceManager", dept: "Maintenance Manager", canChangePass: true },
             "wh@noor.com.sa": { pass: "Noor@123", role: "Warehouse", dept: "Warehouse Department", canChangePass: true },
@@ -355,8 +338,6 @@
 
         let currentUser = JSON.parse(localStorage.getItem('noor_current_user')) || null;
         let customLogoData = localStorage.getItem('noor_custom_logo') || null;
-
-        // Sample data cleared out (starts empty)
         let requests = JSON.parse(localStorage.getItem('noor_requests')) || [];
 
         window.onload = function() {
@@ -398,7 +379,6 @@
             }
         }
 
-        // Case-Insensitive Login Handler
         function handleLogin(e) {
             e.preventDefault();
             const inputEmail = document.getElementById('loginEmail').value.trim().toLowerCase();
@@ -441,6 +421,8 @@
             const displayUserRole = document.getElementById('displayUserRole');
             const passwordChangeBtn = document.getElementById('passwordChangeBtn');
             const warehouseMenuContainer = document.getElementById('warehouseMenuContainer');
+            const warehouseMenuBtnText = document.getElementById('warehouseMenuBtnText');
+            const warehouseMenuOptions = document.getElementById('warehouseMenuOptions');
 
             if (loginView) loginView.classList.add('hidden');
             if (dashboardView) dashboardView.classList.remove('hidden');
@@ -457,12 +439,50 @@
                 }
             }
 
-            // Hide Warehouse Forms Library dropdown for AdminDeleteAll user (saif.ali@noor.com.sa)
             if (warehouseMenuContainer) {
                 if (currentUser.role === 'AdminDeleteAll') {
                     warehouseMenuContainer.classList.add('hidden');
                 } else {
                     warehouseMenuContainer.classList.remove('hidden');
+                    
+                    // Restrict workshop@noor.com.sa to ONLY Material Requisition form
+                    if (currentUser.workshopOnly) {
+                        if (warehouseMenuBtnText) warehouseMenuBtnText.innerText = "New Material Requisition";
+                        if (warehouseMenuOptions) {
+                            warehouseMenuOptions.innerHTML = `
+                                <button onclick="openFormModal('Material Requisition')" class="w-full text-left px-4 py-3 text-xs text-slate-700 hover:bg-orange-50 hover:text-noor-600 flex items-center space-x-2.5 font-medium transition">
+                                    <i class="fa-solid fa-file-invoice text-noor-500 w-5"></i>
+                                    <span>أمر صرف مواد من المخزن (Material Requisition)</span>
+                                </button>
+                            `;
+                        }
+                    } else {
+                        if (warehouseMenuBtnText) warehouseMenuBtnText.innerText = "Warehouse Forms Library";
+                        if (warehouseMenuOptions) {
+                            warehouseMenuOptions.innerHTML = `
+                                <button onclick="openFormModal('Material Requisition')" class="w-full text-left px-4 py-2.5 text-xs text-slate-700 hover:bg-orange-50 hover:text-noor-600 flex items-center space-x-2.5 transition">
+                                    <i class="fa-solid fa-file-invoice text-noor-500 w-5"></i>
+                                    <span>أمر صرف مواد من المخزن (Material Requisition)</span>
+                                </button>
+                                <button onclick="openFormModal('Stock Receipt')" class="w-full text-left px-4 py-2.5 text-xs text-slate-700 hover:bg-orange-50 hover:text-noor-600 flex items-center space-x-2.5 transition">
+                                    <i class="fa-solid fa-boxes-stacked text-noor-500 w-5"></i>
+                                    <span>إيصال استلام مواد للمخزن (Goods Receipt Note)</span>
+                                </button>
+                                <button onclick="openFormModal('Stock Transfer')" class="w-full text-left px-4 py-2.5 text-xs text-slate-700 hover:bg-orange-50 hover:text-noor-600 flex items-center space-x-2.5 transition">
+                                    <i class="fa-solid fa-truck-ramp-box text-noor-500 w-5"></i>
+                                    <span>سند تحويل بين المستودعات (Stock Transfer)</span>
+                                </button>
+                                <button onclick="openFormModal('Custody Bond')" class="w-full text-left px-4 py-2.5 text-xs text-slate-700 hover:bg-orange-50 hover:text-noor-600 flex items-center space-x-2.5 transition">
+                                    <i class="fa-solid fa-hand-holding-hand text-noor-500 w-5"></i>
+                                    <span>سند عهدة مواد / معدات (Custody Bond Form)</span>
+                                </button>
+                                <button onclick="openFormModal('Inventory Audit')" class="w-full text-left px-4 py-2.5 text-xs text-slate-700 hover:bg-orange-50 hover:text-noor-600 flex items-center space-x-2.5 transition">
+                                    <i class="fa-solid fa-clipboard-check text-noor-500 w-5"></i>
+                                    <span>محضر جرد المخزن (Stock Audit Sheet)</span>
+                                </button>
+                            `;
+                        }
+                    }
                 }
             }
 
@@ -470,6 +490,10 @@
         }
 
         function toggleWarehouseMenu() {
+            if (currentUser && currentUser.workshopOnly) {
+                openFormModal('Material Requisition');
+                return;
+            }
             const menu = document.getElementById('warehouseMenu');
             if (menu) menu.classList.toggle('hidden');
         }
@@ -490,7 +514,7 @@
             if (recordCount) recordCount.innerText = `${filtered.length} Records`;
 
             if (filtered.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="8" class="text-center py-6 text-slate-400 italic">No document records found.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="8" class="text-center py-8 text-slate-400 italic">No document records found.</td></tr>`;
                 return;
             }
 
@@ -501,28 +525,27 @@
                 if (req.status === 'Closed') badgeColor = "bg-green-100 text-green-800";
                 if (req.status === 'Rejected') badgeColor = "bg-red-100 text-red-800";
 
-                // Deletion rule: Admin (saif.ali@noor.com.sa) can delete ANYTHING. Requesting dept can delete unapproved items.
                 let canDelete = (currentUser && currentUser.role === 'AdminDeleteAll') || 
                                 (currentUser && currentUser.role === 'Requesting' && req.approverName.toLowerCase() === currentUser.email.toLowerCase() && (req.status === 'Initiated' || req.status === 'In Process') && req.lastStage && req.lastStage.includes('Initiated'));
 
                 let tr = document.createElement('tr');
-                tr.className = "hover:bg-slate-50 transition";
+                tr.className = "hover:bg-slate-50/80 transition";
                 tr.innerHTML = `
-                    <td class="p-3 font-bold text-noor-800">${req.id}</td>
-                    <td class="p-3 text-slate-600">${req.date}</td>
-                    <td class="p-3 font-medium">${req.department}</td>
-                    <td class="p-3 text-slate-600 truncate max-w-xs">${req.purpose} <br><span class="text-[10px] text-orange-600 font-semibold">[${req.formType}]</span></td>
-                    <td class="p-3 text-center">${req.items.length} items</td>
-                    <td class="p-3"><span class="px-2.5 py-1 rounded-full text-[11px] font-bold ${badgeColor}">${req.status}</span></td>
-                    <td class="p-3 text-[11px] text-slate-600">
+                    <td class="p-4 font-bold text-noor-800">${req.id}</td>
+                    <td class="p-4 text-slate-600">${req.date}</td>
+                    <td class="p-4 font-medium">${req.department}</td>
+                    <td class="p-4 text-slate-600 truncate max-w-xs">${req.purpose} <br><span class="text-[10px] text-orange-600 font-semibold">[${req.formType}]</span></td>
+                    <td class="p-4 text-center">${req.items.length} items</td>
+                    <td class="p-4"><span class="px-3 py-1 rounded-full text-[11px] font-bold ${badgeColor}">${req.status}</span></td>
+                    <td class="p-4 text-[11px] text-slate-600">
                         <span class="font-semibold text-slate-800">${req.lastStage}</span><br>
                         <span class="text-slate-400">By: ${req.approverName || 'N/A'}</span>
                     </td>
-                    <td class="p-3 text-center space-x-2">
-                        <button onclick="openViewModal('${req.id}')" class="bg-orange-50 hover:bg-orange-100 text-noor-700 font-medium px-3 py-1 rounded-lg text-xs transition">
+                    <td class="p-4 text-center space-x-2">
+                        <button onclick="openViewModal('${req.id}')" class="bg-orange-50 hover:bg-orange-100 text-noor-700 font-medium px-3.5 py-1.5 rounded-xl text-xs transition shadow-sm">
                             View / Review
                         </button>
-                        ${canDelete ? `<button onclick="deleteRequest('${req.id}')" class="bg-red-50 hover:bg-red-100 text-red-600 font-medium px-2.5 py-1 rounded-lg text-xs transition" title="Delete Document"><i class="fa-solid fa-trash"></i></button>` : ''}
+                        ${canDelete ? `<button onclick="deleteRequest('${req.id}')" class="bg-red-50 hover:bg-red-100 text-red-600 font-medium px-2.5 py-1.5 rounded-xl text-xs transition shadow-sm" title="Delete Document"><i class="fa-solid fa-trash"></i></button>` : ''}
                     </td>
                 `;
                 tbody.appendChild(tr);
@@ -531,7 +554,7 @@
 
         function openFormModal(formTypeName) {
             if (!currentUser || currentUser.role !== 'Requesting') {
-                alert("Only Requesting Department users (Service Dept or Transport Workshop) can initiate new forms.");
+                alert("Only Requesting Department users can initiate new forms.");
                 return;
             }
 
@@ -589,13 +612,13 @@
             let tr = document.createElement('tr');
             tr.className = "border-b item-row";
             tr.innerHTML = `
-                <td class="p-2 font-bold row-idx">${tbody.children.length + 1}</td>
-                <td class="p-2"><input type="text" required class="item-name w-full px-2 py-1.5 bg-slate-50 border rounded-lg text-xs" placeholder="Item Name / Asset Description"></td>
-                <td class="p-2"><input type="text" class="item-code w-full px-2 py-1.5 bg-slate-50 border rounded-lg text-xs" placeholder="Code / Serial No."></td>
-                <td class="p-2"><input type="text" required class="item-unit w-full px-2 py-1.5 bg-slate-50 border rounded-lg text-xs" placeholder="Unit"></td>
-                <td class="p-2"><input type="number" min="1" value="1" required class="item-qty w-full px-2 py-1.5 bg-slate-50 border rounded-lg text-xs text-center font-bold"></td>
-                <td class="p-2"><input type="text" class="item-notes w-full px-2 py-1.5 bg-slate-50 border rounded-lg text-xs" placeholder="Condition / Notes"></td>
-                <td class="p-2"><button type="button" onclick="this.closest('tr').remove(); renumberRows();" class="text-red-400 hover:text-red-700 font-bold p-1">&times;</button></td>
+                <td class="p-2.5 font-bold row-idx">${tbody.children.length + 1}</td>
+                <td class="p-2.5"><input type="text" required class="item-name w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-noor-500 focus:bg-white focus:outline-none" placeholder="Item Name / Asset Description"></td>
+                <td class="p-2.5"><input type="text" class="item-code w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-noor-500 focus:bg-white focus:outline-none" placeholder="Optional Code"></td>
+                <td class="p-2.5"><input type="text" required class="item-unit w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-noor-500 focus:bg-white focus:outline-none" placeholder="Unit"></td>
+                <td class="p-2.5"><input type="number" min="1" value="1" required class="item-qty w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs text-center font-bold focus:ring-2 focus:ring-noor-500 focus:bg-white focus:outline-none"></td>
+                <td class="p-2.5"><input type="text" class="item-notes w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-noor-500 focus:bg-white focus:outline-none" placeholder="Condition / Notes"></td>
+                <td class="p-2.5"><button type="button" onclick="this.closest('tr').remove(); renumberRows();" class="text-red-400 hover:text-red-700 font-bold p-1.5 rounded-lg hover:bg-red-50 transition"><i class="fa-solid fa-xmark"></i></button></td>
             `;
             tbody.appendChild(tr);
         }
@@ -678,25 +701,25 @@
             if (modalReqMeta) modalReqMeta.innerText = `Created on: ${req.date} | Purpose: ${req.purpose} | Target Reviewer: ${req.routingTarget || 'N/A'}`;
 
             let itemsHtml = `
-                <div class="bg-slate-50 p-3 rounded-xl mb-4 border">
-                    <p class="font-bold text-noor-800 mb-2 uppercase text-[11px]">Items & Assets Specification:</p>
-                    <table class="w-full text-xs bg-white rounded-lg border overflow-hidden">
-                        <thead><tr class="bg-slate-100 border-b"><th class="p-2">#</th><th class="p-2">Item Name</th><th class="p-2">Code</th><th class="p-2">Unit</th><th class="p-2">Qty</th><th class="p-2">Notes</th></tr></thead>
+                <div class="bg-slate-50 p-4 rounded-2xl mb-4 border border-slate-200">
+                    <p class="font-bold text-noor-800 mb-2.5 uppercase text-[11px]">Items & Assets Specification:</p>
+                    <table class="w-full text-xs bg-white rounded-xl border overflow-hidden">
+                        <thead><tr class="bg-slate-100 border-b"><th class="p-2.5">#</th><th class="p-2.5 text-left">Item Name</th><th class="p-2.5">Code</th><th class="p-2.5">Unit</th><th class="p-2.5">Qty</th><th class="p-2.5 text-left">Notes</th></tr></thead>
                         <tbody>
             `;
             req.items.forEach((item, idx) => {
-                itemsHtml += `<tr class="border-b"><td class="p-2 text-center">${idx+1}</td><td class="p-2 font-medium">${item.name}</td><td class="p-2 text-center">${item.code}</td><td class="p-2 text-center">${item.unit}</td><td class="p-2 text-center font-bold">${item.qty}</td><td class="p-2">${item.notes}</td></tr>`;
+                itemsHtml += `<tr class="border-b"><td class="p-2.5 text-center">${idx+1}</td><td class="p-2.5 font-medium">${item.name}</td><td class="p-2.5 text-center">${item.code}</td><td class="p-2.5 text-center">${item.unit}</td><td class="p-2.5 text-center font-bold">${item.qty}</td><td class="p-2.5">${item.notes}</td></tr>`;
             });
             itemsHtml += `</tbody></table></div>`;
 
             let historyHtml = `
                 <div class="mt-4">
-                    <p class="font-bold text-noor-800 mb-2 uppercase text-[11px]">Audit Trail & Approvals:</p>
+                    <p class="font-bold text-noor-800 mb-2.5 uppercase text-[11px]">Audit Trail & Approvals:</p>
                     <div class="space-y-2">
             `;
             req.history.forEach(h => {
                 historyHtml += `
-                    <div class="text-xs bg-slate-50 p-2.5 rounded-xl border border-slate-200 flex justify-between items-center">
+                    <div class="text-xs bg-slate-50 p-3 rounded-2xl border border-slate-200 flex justify-between items-center shadow-sm">
                         <div>
                             <span class="font-bold text-orange-600">[${h.stage}]</span> 
                             <span class="text-slate-700 ml-1">${h.note}</span>
@@ -731,14 +754,14 @@
                 if (isAssignedReviewer) {
                     if (notesContainer) notesContainer.classList.remove('hidden');
                     actionHtml = `
-                        <button onclick="processApproval('${req.id}', 'Reject', '${currentUser.dept}')" class="px-4 py-2 bg-red-600 text-white rounded-xl text-xs font-bold hover:bg-red-700 shadow">Reject Document</button>
-                        <button onclick="processApproval('${req.id}', 'ApproveReviewer', '${currentUser.dept}')" class="px-5 py-2 bg-emerald-600 text-white rounded-xl text-xs font-bold hover:bg-emerald-700 shadow">Approve & Forward to Warehouse (Level 2)</button>
+                        <button onclick="processApproval('${req.id}', 'Reject', '${currentUser.dept}')" class="px-4.5 py-2.5 bg-red-600 text-white rounded-2xl text-xs font-bold hover:bg-red-700 shadow-md">Reject Document</button>
+                        <button onclick="processApproval('${req.id}', 'ApproveReviewer', '${currentUser.dept}')" class="px-5 py-2.5 bg-emerald-600 text-white rounded-2xl text-xs font-bold hover:bg-emerald-700 shadow-md">Approve & Forward to Warehouse (Level 2)</button>
                     `;
                 } else if (isWarehouse && req.lastStage.includes('Approved')) {
                     if (notesContainer) notesContainer.classList.remove('hidden');
                     actionHtml = `
-                        <button onclick="processApproval('${req.id}', 'Reject', 'Warehouse')" class="px-4 py-2 bg-red-600 text-white rounded-xl text-xs font-bold hover:bg-red-700 shadow">Reject Document</button>
-                        <button onclick="processApproval('${req.id}', 'Close', 'Warehouse')" class="px-5 py-2 bg-noor-800 text-white rounded-xl text-xs font-bold hover:bg-slate-900 shadow">Finalize Dispatch & Close Document (Level 3)</button>
+                        <button onclick="processApproval('${req.id}', 'Reject', 'Warehouse')" class="px-4.5 py-2.5 bg-red-600 text-white rounded-2xl text-xs font-bold hover:bg-red-700 shadow-md">Reject Document</button>
+                        <button onclick="processApproval('${req.id}', 'Close', 'Warehouse')" class="px-5 py-2.5 bg-noor-800 text-white rounded-2xl text-xs font-bold hover:bg-slate-900 shadow-md">Finalize Dispatch & Close Document (Level 3)</button>
                     `;
                 } else {
                     if (notesContainer) notesContainer.classList.add('hidden');
