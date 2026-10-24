@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Al Noor United Fuel & Transport Co. - Warehouse Requisition System</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'Tajawal', 'sans-serif'],
+                        arabic: ['Tajawal', 'sans-serif']
+                    },
+                    colors: {
+                        noor: {
+                            50: '#fdf4f0',
+                            100: '#fbe8e1',
+                            500: '#f97316', // Official Noor Sunburst Orange Accent
+                            600: '#ea580c',
+                            700: '#c2410c',
+                            800: '#1e1b4b', // Deep Corporate Navy/Indigo matching official transport branding
+                            900: '#0f172a'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans min-h-screen flex flex-col justify-between">
+
+    <!-- Top Header -->
+    <header class="bg-noor-800 text-white shadow-md border-b-4 border-noor-500">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex flex-col md:flex-row justify-between items-center">
+            <div class="flex items-center space-x-4">
+                <!-- Noor Sunburst Logo Simulation -->
+                <div class="w-12 h-12 bg-gradient-to-tr from-noor-500 to-amber-400 rounded-full flex items-center justify-center text-white shadow-lg relative overflow-hidden ring-2 ring-white/20">
+                    <i class="fa-solid fa-sun text-2xl animate-spin" style="animation-duration: 20s;"></i>
+                </div>
+                <div>
+                    <h1 class="text-lg md:text-xl font-black tracking-wide font-arabic">شركة النور المتحدة للوقود و النقليات</h1>
+                    <p class="text-xs text-orange-200 font-medium">Al Noor United Fuel & Transport Co. — Warehouse Requisition & ERP System</p>
+                </div>
+            </div>
+
+            <!-- User Session Box -->
+            <div id="userSessionHeader" class="hidden mt-3 md:mt-0 flex items-center space-x-4">
+                <div class="text-right">
+                    <span id="displayUserRole" class="block text-[11px] font-bold uppercase tracking-wider text-orange-300 bg-black/30 px-2.5 py-0.5 rounded-full"></span>
+                    <span id="displayUserId" class="text-xs font-semibold text-slate-200"></span>
+                </div>
+                <button onclick="openPasswordModal()" class="text-xs bg-white/10 hover:bg-white/20 text-white font-medium px-3 py-1.5 rounded border border-white/20 transition flex items-center space-x-1.5">
+                    <i class="fa-solid fa-key"></i>
+                    <span>Password</span>
+                </button>
+                <button onclick="logout()" class="text-xs bg-red-600/80 hover:bg-red-700 text-white font-medium px-3 py-1.5 rounded transition flex items-center space-x-1.5">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    <span>Logout</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Body -->
+    <main class="max-w-7xl mx-auto px-4 py-8 flex-grow w-full">
+
+        <!-- LOGIN VIEW -->
+        <div id="loginView" class="max-w-md mx-auto bg-white rounded-2xl shadow-xl border border-slate-200 p-8 mt-6">
+            <div class="text-center mb-6">
+                <div class="w-16 h-16 bg-noor-800 text-noor-500 rounded-full flex items-center justify-center mx-auto mb-3 shadow-md text-2xl ring-4 ring-orange-100">
+                    <i class="fa-solid fa-shield-halved"></i>
+                </div>
+                <h2 class="text-2xl font-bold text-noor-800">Department Portal</h2>
+                <p class="text-xs text-slate-500 mt-1">Sign in with your department credentials to proceed</p>
+            </div>
+
+            <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">User ID / Email</label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400"><i class="fa-solid fa-user"></i></span>
+                        <input type="email" id="loginEmail" required placeholder="e.g. Req@noor.com.sa" 
+                            class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:ring-2 focus:ring-noor-500 focus:bg-white focus:outline-none transition">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Password</label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400"><i class="fa-solid fa-lock"></i></span>
+                        <input type="password" id="loginPassword" required placeholder="••••••••" 
+                            class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:ring-2 focus:ring-noor-500 focus:bg-white focus:outline-none transition">
+                    </div>
+                </div>
+                <button type="submit" class="w-full bg-noor-800 hover:bg-slate-900 text-white font-bold py-3 rounded-xl shadow-lg transition duration-200 flex items-center justify-center space-x-2">
+                    <span>Secure Sign In</span>
+                    <i class="fa-solid fa-arrow-right-to-bracket"></i>
+                </button>
+            </form>
+
+            <div class="mt-6 pt-4 border-t border-slate-100 text-center text-[11px] text-slate-400">
+                <p>Al Noor United Fuel & Transport Co. © 2026. Internal System Protected.</p>
+            </div>
+        </div>
+
+        <!-- DASHBOARD VIEW -->
+        <div id="dashboardView" class="hidden space-y-6">
+            
+            <!-- Dashboard Action Bar & Tabs -->
+            <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 flex flex-col lg:flex-row justify-between items-center gap-4">
+                
+                <!-- Filter and Search -->
+                <div class="flex flex-wrap items-center gap-3 w-full lg:w-auto">
+                    <div class="flex items-center space-x-2">
+                        <span class="text-xs font-bold text-slate-600">Status:</span>
+                        <select id="statusFilter" onchange="renderDashboard()" class="px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs font-medium focus:outline-none focus:ring-2 focus:ring-noor-500">
+                            <option value="ALL">All Requests</option>
+                            <option value="Initiated">Initiated (Level 1)</option>
+                            <option value="In Process">In Process (Accounting)</option>
+                            <option value="Approved">Approved (Warehouse Ready)</option>
+                            <option value="Closed">Closed (Completed)</option>
+                            <option value="Rejected">Rejected</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex flex-wrap items-center gap-3 w-full lg:w-auto justify-end">
+                    <!-- Warehouse Form Library Dropdown -->
+                    <div class="relative">
+                        <button onclick="toggleWarehouseMenu()" class="bg-amber-500 hover:bg-amber-600 text-white font-bold px-4 py-2 rounded-xl text-xs shadow transition flex items-center space-x-2">
+                            <i class="fa-solid fa-book-open"></i>
+                            <span>Warehouse Forms Library</span>
+                            <i class="fa-solid fa-chevron-down text-[10px]"></i>
+                        </button>
+                        <div id="warehouseMenu" class="hidden absolute right-0 mt-2 w-72 bg-white rounded-xl shadow-2xl border border-slate-200 z-50 py-2">
+                            <div class="px-3 py-1.5 text-[11px] font-bold text-slate-400 uppercase tracking-wider border-b">Standard Warehouse Documents</div>
+                            <button onclick="openFormModal('Material Requisition')" class="w-full text-left px-4 py-2.5 text-xs text-slate-700 hover:bg-orange-50 hover:text-noor-600 flex items-center space-x-2">
+                                <i class="fa-solid fa-file-invoice text-orange-500"></i>
+                                <span>أمر صرف مواد من المخزن (Material Requisition)</span>
+                            </button>
+                            <button onclick="openFormModal('Stock Receipt')" class="w-full text-left px-4 py-2.5 text-xs text-slate-700 hover:bg-orange-50 hover:text-noor-600 flex items-center space-x-2">
+                                <i class="fa-solid fa-boxes-stacked text-orange-500"></i>
+                                <span>إيصال استلام مواد للمخزن (Goods Receipt Note)</span>
+                            </button>
+                            <button onclick="openFormModal('Stock Transfer')" class="w-full text-left px-4 py-2.5 text-xs text-slate-700 hover:bg-orange-50 hover:text-noor-600 flex items-center space-x-2">
+                                <i class="fa-solid fa-truck-ramp-box text-orange-500"></i>
+                                <span>سند تحويل بين المستودعات (Stock Transfer)</span>
+                            </button>
+                            <button onclick="openFormModal('Inventory Audit')" class="w-full text-left px-4 py-2.5 text-xs text-slate-700 hover:bg-orange-50 hover:text-noor-600 flex items-center space-x-2">
+                                <i class="fa-solid fa-clipboard-check text-orange-500"></i>
+                                <span>محضر جرد المخزن (Stock Audit Sheet)</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <button id="newRequisitionBtn" onclick="openFormModal('Material Requisition')" class="hidden bg-noor-600 hover:bg-noor-700 text-white font-bold px-4 py-2 rounded-xl text-xs shadow transition flex items-center space-x-2">
+                        <i class="fa-solid fa-plus"></i>
+                        <span>New Material Requisition</span>
+                    </button>
+                    <button onclick="exportTableToCSV()" class="bg-slate-800 hover:bg-slate-900 text-white font-medium px-4 py-2 rounded-xl text-xs transition flex items-center space-x-2">
+                        <i class="fa-solid fa-download"></i>
+                        <span>Download CSV</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Master Requests Table -->
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                <div class="p-4 border-b border-slate-200 bg-slate-50 flex justify-between items-center">
+                    <h3 class="font-bold text-noor-800 text-sm flex items-center space-x-2">
+                        <i class="fa-solid fa-table-list text-noor-500"></i>
+                        <span>Requisition & Transaction Audit Logs</span>
+                    </h3>
+                    <span id="recordCount" class="text-xs font-bold bg-orange-100 text-noor-700 px-3 py-1 rounded-full">0 Records</span>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-noor-800 text-white text-[11px] uppercase tracking-wider">
+                                <th class="p-3">Req ID</th>
+                                <th class="p-3">Date</th>
+                                <th class="p-3">Department</th>
+                                <th class="p-3">Purpose / الطلب لأجل</th>
+                                <th class="p-3">Items Count</th>
+                                <th class="p-3">Current Status</th>
+                                <th class="p-3">Last Approval Stage & Approver</th>
+                                <th class="p-3 text-center">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="requestsTableBody" class="divide-y divide-slate-100 text-xs">
+                            <!-- Populated dynamically via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-white border-t border-slate-200 py-4 mt-12 text-center text-xs text-slate-500">
+        &copy; 2026 Al Noor United Fuel & Transport Co. (شركة النور المتحدة للوقود و النقليات). All rights reserved.
+    </footer>
+
+    <!-- WAREHOUSE & REQUISITION FORM MODAL (Content-Size Aware Columns) -->
+    <div id="formModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-5xl w-full max-h-[90vh] overflow-y-auto p-6 md:p-8 border-t-4 border-noor-500">
+            
+            <div class="flex justify-between items-start border-b pb-4 mb-4">
+                <div>
+                    <h3 id="formModalTitle" class="text-xl font-black text-noor-800 font-arabic">أمر صرف مواد من المخزن</h3>
+                    <p class="text-xs text-slate-500">Al Noor United Official Warehouse Requisition Form (Level 1 Initiation)</p>
+                </div>
+                <button onclick="closeFormModal()" class="text-slate-400 hover:text-slate-600 font-bold text-xl p-2">&times;</button>
+            </div>
+
+            <form id="activeRequisitionForm" onsubmit="submitFormRequisition(event)" class="space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 bg-slate-50 p-4 rounded-xl border border-slate-200">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">الجهة الطالبة (Requesting Department)</label>
+                        <input type="text" id="formDept" required placeholder="e.g. Fleet Maintenance Dept" 
+                            class="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-noor-500 focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">الطلب لأجل (Purpose / For Reason)</label>
+                        <input type="text" id="formPurpose" required placeholder="e.g. Spare parts for Truck #402" 
+                            class="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-noor-500 focus:outline-none">
+                    </div>
+                </div>
+
+                <!-- Content Size Aware Items Table -->
+                <div>
+                    <div class="flex justify-between items-center mb-2">
+                        <label class="text-xs font-black text-noor-800 uppercase font-arabic">المطلوب صرف الأصناف المذكورة أدناه (Requested Items List)</label>
+                        <button type="button" onclick="addItemRow()" class="text-xs bg-orange-100 text-noor-700 px-3 py-1.5 rounded-xl font-bold hover:bg-orange-200 transition flex items-center space-x-1">
+                            <i class="fa-solid fa-plus"></i>
+                            <span>Add Item Row</span>
+                        </button>
+                    </div>
+                    <div class="overflow-x-auto border border-slate-200 rounded-xl shadow-sm">
+                        <table class="w-full text-center text-xs">
+                            <thead class="bg-noor-800 text-white border-b">
+                                <tr>
+                                    <th class="p-2.5 w-12">م</th>
+                                    <th class="p-2.5" style="width: 32%;">إسم الصنف (Item Name)</th>
+                                    <th class="p-2.5" style="width: 15%;">كود صنف (Code)</th>
+                                    <th class="p-2.5" style="width: 12%;">الوحدة (Unit)</th>
+                                    <th class="p-2.5" style="width: 12%;">الكمية (Qty)</th>
+                                    <th class="p-2.5" style="width: 22%;">ملاحظات (Notes)</th>
+                                    <th class="p-2.5 w-10"></th>
+                                </tr>
+                            </thead>
+                            <tbody id="formItemsTableBody" class="divide-y divide-slate-100">
+                                <!-- Populated dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Signatures Section matching physical form -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4 border-t border-slate-200 text-center text-xs text-slate-600">
+                    <div class="bg-slate-50 p-3 rounded-xl border border-dashed border-slate-300">
+                        <p class="font-bold text-slate-800">توقيع الفني (Technical Signature)</p>
+                        <div class="h-10 flex items-center justify-center text-slate-400 italic">Pending Dispatch</div>
+                    </div>
+                    <div class="bg-slate-50 p-3 rounded-xl border border-dashed border-slate-300">
+                        <p class="font-bold text-slate-800">أمين المخزن (Warehouse Keeper)</p>
+                        <div class="h-10 flex items-center justify-center text-slate-400 italic">Pending Approval</div>
+                    </div>
+                    <div class="bg-slate-50 p-3 rounded-xl border border-dashed border-slate-300">
+                        <p class="font-bold text-slate-800">المدير المسؤول (Responsible Manager)</p>
+                        <div class="h-10 flex items-center justify-center text-slate-400 italic">Pending Authorization</div>
+                    </div>
+                </div>
+
+                <div class="flex justify-end space-x-3 pt-4 border-t">
+                    <button type="button" onclick="closeFormModal()" class="px-5 py-2.5 border border-slate-300 rounded-xl text-xs text-slate-600 hover:bg-slate-100 transition">Cancel</button>
+                    <button type="submit" class="px-6 py-2.5 bg-noor-800 text-white rounded-xl text-xs font-bold hover:bg-slate-900 shadow transition flex items-center space-x-2">
+                        <i class="fa-solid fa-paper-plane"></i>
+                        <span>Submit Requisition (Level 1)</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- VIEW & APPROVAL MODAL WITH OPTIONAL NOTES -->
+    <div id="viewRequestModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto p-6 md:p-8 border-t-4 border-orange-500">
+            <div class="flex justify-between items-start border-b pb-4 mb-4">
+                <div>
+                    <h3 id="modalReqTitle" class="text-xl font-bold text-noor-800">Request Details</h3>
+                    <p id="modalReqMeta" class="text-xs text-slate-500 mt-0.5"></p>
+                </div>
+                <button onclick="closeViewModal()" class="text-slate-400 hover:text-slate-600 font-bold text-xl p-2">&times;</button>
+            </div>
+
+            <div id="modalReqBody" class="space-y-4 text-xs">
+                <!-- Dynamic Request details & approval logs -->
+            </div>
+
+            <!-- Optional Approval Notes Input -->
+            <div id="approvalNotesContainer" class="mt-4 pt-4 border-t border-slate-200 hidden">
+                <label class="block text-xs font-bold text-slate-700 mb-1">Optional Approval / Rejection Notes (ملاحظات الاختيار)</label>
+                <textarea id="optionalApprovalNote" rows="2" placeholder="Add any specific remarks or conditions for this action..." 
+                    class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-noor-500 focus:outline-none"></textarea>
+            </div>
+
+            <div id="modalActionControls" class="mt-6 pt-4 border-t flex justify-end space-x-3">
+                <!-- Action buttons based on role & status -->
+            </div>
+        </div>
+    </div>
+
+    <!-- PASSWORD UPDATE MODAL -->
+    <div id="passwordModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 border-t-4 border-noor-800">
+            <h3 class="text-lg font-bold text-noor-800 mb-1">Update Department Password</h3>
+            <p class="text-xs text-slate-500 mb-4">Verify your last remembered password to establish a new one securely.</p>
+            
+            <form onsubmit="handlePasswordUpdate(event)" class="space-y-3">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Current / Last Remembered Password</label>
+                    <input type="password" id="currentPassInput" required class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-noor-500 focus:outline-none">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">New Password</label>
+                    <input type="password" id="newPassInput" required class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-noor-500 focus:outline-none">
+                </div>
+                <div class="flex justify-end space-x-2 pt-2">
+                    <button type="button" onclick="closePasswordModal()" class="px-4 py-2 border rounded-xl text-xs hover:bg-slate-100">Cancel</button>
+                    <button type="submit" class="px-5 py-2 bg-noor-800 text-white rounded-xl text-xs font-bold hover:bg-slate-900 shadow">Update Password</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT SYSTEM LOGIC -->
+    <script>
+        // Users Database with updated Level 1 ID: Req@noor.com.sa
+        let usersDb = JSON.parse(localStorage.getItem('noor_users')) || {
+            "Req@noor.com.sa": { pass: "Noor@123", role: "Requesting", dept: "Level 1 - Requesting Department" },
+            "Account@noor.com.sa": { pass: "Noor@123", role: "Accounting", dept: "Level 2 - Accounting Department" },
+            "Wh@noor.com.sa": { pass: "Noor@123", role: "Warehouse", dept: "Level 3 - Warehouse Department" }
+        };
+
+        let currentUser = JSON.parse(localStorage.getItem('noor_current_user')) || null;
+
+        // Mock Initial Requisition records
+        let requests = JSON.parse(localStorage.getItem('noor_requests')) || [
+            {
+                id: "REQ-2026-001",
+                date: "2026-10-24",
+                department: "Transport Operations",
+                purpose: "Heavy vehicle brake pads and lubricant oil",
+                formType: "Material Requisition",
+                items: [
+                    { name: "Brake Pads Heavy Duty", code: "BP-992", unit: "Sets", qty: 4, notes: "Urgent replacement" },
+                    { name: "Synthetic Engine Oil 15W40", code: "OIL-154", unit: "drums", qty: 2, notes: "Regular maintenance" }
+                ],
+                status: "In Process",
+                lastStage: "Initiated by Level 1",
+                approverName: "Req@noor.com.sa",
+                history: [
+                    { stage: "Initiated", by: "Req@noor.com.sa", date: "2026-10-24 08:30", note: "Created requisition form" }
+                ]
+            },
+            {
+                id: "REQ-2026-002",
+                date: "2026-10-23",
+                department: "Logistics Fleet",
+                purpose: "Uniform safety jackets & gloves",
+                formType: "Material Requisition",
+                items: [
+                    { name: "Reflective Safety Jacket", code: "JKT-01", unit: "Pcs", qty: 25, notes: "Standard issue" }
+                ],
+                status: "Approved",
+                lastStage: "Approved by Accounting (Level 2)",
+                approverName: "Account@noor.com.sa",
+                history: [
+                    { stage: "Initiated", by: "Req@noor.com.sa", date: "2026-10-23 10:15", note: "Created requisition form" },
+                    { stage: "In Process / Approved", by: "Account@noor.com.sa", date: "2026-10-23 14:00", note: "Budget verified and approved" }
+                ]
+            }
+        ];
+
+        window.onload = function() {
+            if (currentUser) {
+                showDashboard();
+            } else {
+                showLogin();
+            }
+            // Close warehouse dropdown when clicking outside
+            window.onclick = function(event) {
+                if (!event.target.closest('.relative')) {
+                    document.getElementById('warehouseMenu').classList.add('hidden');
+                }
+            };
+        };
+
+        function handleLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value.trim();
+            const pass = document.getElementById('loginPassword').value;
+
+            if (usersDb[email] && usersDb[email].pass === pass) {
+                currentUser = { email, ...usersDb[email] };
+                localStorage.setItem('noor_current_user', JSON.stringify(currentUser));
+                showDashboard();
+            } else {
+                alert("Invalid User ID or Password. Please check your credentials.");
+            }
+        }
+
+        function logout() {
+            currentUser = null;
+            localStorage.removeItem('noor_current_user');
+            showLogin();
+        }
+
+        function showLogin() {
+            document.getElementById('loginView').classList.remove('hidden');
+            document.getElementById('dashboardView').classList.add('hidden');
+            document.getElementById('userSessionHeader').classList.add('hidden');
+            document.getElementById('loginForm').reset();
+        }
+
+        function showDashboard() {
+            document.getElementById('loginView').classList.add('hidden');
+            document.getElementById('dashboardView').classList.remove('hidden');
+            document.getElementById('userSessionHeader').classList.remove('hidden');
+
+            document.getElementById('displayUserId').innerText = currentUser.email;
+            document.getElementById('displayUserRole').innerText = currentUser.dept;
+
+            // Show New Requisition button only for Level 1 Requesting Dept
+            if (currentUser.role === 'Requesting') {
+                document.getElementById('newRequisitionBtn').classList.remove('hidden');
+            } else {
+                document.getElementById('newRequisitionBtn').classList.add('hidden');
+            }
+
+            renderDashboard();
+        }
+
+        function toggleWarehouseMenu() {
+            const menu = document.getElementById('warehouseMenu');
+            menu.classList.toggle('hidden');
+        }
+
+        function renderDashboard() {
+            const filter = document.getElementById('statusFilter').value;
+            const tbody = document.getElementById('requestsTableBody');
+            tbody.innerHTML = '';
+
+            let filtered = requests;
+            if (filter !== 'ALL') {
+                filtered = requests.filter(r => r.status === filter);
+            }
+
+            document.getElementById('recordCount').innerText = `${filtered.length} Records`;
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="8" class="text-center py-6 text-slate-400 italic">No requisition records found.</td></tr>`;
+                return;
+            }
+
+            filtered.forEach(req => {
+                let badgeColor = "bg-yellow-100 text-yellow-800";
+                if (req.status === 'In Process') badgeColor = "bg-blue-100 text-blue-800";
+                if (req.status === 'Approved') badgeColor = "bg-purple-100 text-purple-800";
+                if (req.status === 'Closed') badgeColor = "bg-green-100 text-green-800";
+                if (req.status === 'Rejected') badgeColor = "bg-red-100 text-red-800";
+
+                // Check if deletable: only Requester level can delete, AND status must still be 'Initiated' or 'In Process' (not approved by Level 2 yet)
+                let canDelete = (currentUser.role === 'Requesting' && (req.status === 'Initiated' || req.status === 'In Process') && req.lastStage.includes('Initiated'));
+
+                let tr = document.createElement('tr');
+                tr.className = "hover:bg-slate-50 transition";
+                tr.innerHTML = `
+                    <td class="p-3 font-bold text-noor-800">${req.id}</td>
+                    <td class="p-3 text-slate-600">${req.date}</td>
+                    <td class="p-3 font-medium">${req.department}</td>
+                    <td class="p-3 text-slate-600 truncate max-w-xs">${req.purpose} <br><span class="text-[10px] text-orange-600 font-semibold">[${req.formType}]</span></td>
+                    <td class="p-3 text-center">${req.items.length} items</td>
+                    <td class="p-3"><span class="px-2.5 py-1 rounded-full text-[11px] font-bold ${badgeColor}">${req.status}</span></td>
+                    <td class="p-3 text-[11px] text-slate-600">
+                        <span class="font-semibold text-slate-800">${req.lastStage}</span><br>
+                        <span class="text-slate-400">By: ${req.approverName || 'N/A'}</span>
+                    </td>
+                    <td class="p-3 text-center space-x-2">
+                        <button onclick="openViewModal('${req.id}')" class="bg-orange-50 hover:bg-orange-100 text-noor-700 font-medium px-3 py-1 rounded-lg text-xs transition">
+                            View / Review
+                        </button>
+                        ${canDelete ? `<button onclick="deleteRequest('${req.id}')" class="bg-red-50 hover:bg-red-100 text-red-600 font-medium px-2.5 py-1 rounded-lg text-xs transition" title="Delete Requisition"><i class="fa-solid fa-trash"></i></button>` : ''}
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // Warehouse Forms Library Modal Opening
+        function openFormModal(formTypeName) {
+            document.getElementById('formModalTitle').innerText = 
+                formTypeName === 'Material Requisition' ? 'أمر صرف مواد من المخزن (Material Requisition)' :
+                formTypeName === 'Stock Receipt' ? 'إيصال استلام مواد للمخزن (Goods Receipt Note)' :
+                formTypeName === 'Stock Transfer' ? 'سند تحويل بين المستودعات (Stock Transfer)' : 'محضر جرد المخزن (Stock Audit Sheet)';
+            
+            document.getElementById('formModal').classList.remove('hidden');
+            document.getElementById('activeRequisitionForm').reset();
+            document.getElementById('formItemsTableBody').innerHTML = '';
+            addItemRow();
+        }
+
+        function closeFormModal() {
+            document.getElementById('formModal').classList.add('hidden');
+        }
+
+        function addItemRow() {
+            const tbody = document.getElementById('formItemsTableBody');
+            let tr = document.createElement('tr');
+            tr.className = "border-b item-row";
+            tr.innerHTML = `
+                <td class="p-2 font-bold row-idx">${tbody.children.length + 1}</td>
+                <td class="p-2"><input type="text" required class="item-name w-full px-2 py-1.5 bg-slate-50 border rounded-lg text-xs" placeholder="Item Name / Description"></td>
+                <td class="p-2"><input type="text" class="item-code w-full px-2 py-1.5 bg-slate-50 border rounded-lg text-xs" placeholder="Item Code"></td>
+                <td class="p-2"><input type="text" required class="item-unit w-full px-2 py-1.5 bg-slate-50 border rounded-lg text-xs" placeholder="Unit (Pcs/Sets/Drums)"></td>
+                <td class="p-2"><input type="number" min="1" value="1" required class="item-qty w-full px-2 py-1.5 bg-slate-50 border rounded-lg text-xs text-center font-bold"></td>
+                <td class="p-2"><input type="text" class="item-notes w-full px-2 py-1.5 bg-slate-50 border rounded-lg text-xs" placeholder="Notes"></td>
+                <td class="p-2"><button type="button" onclick="this.closest('tr').remove(); renumberRows();" class="text-red-400 hover:text-red-700 font-bold p-1">&times;</button></td>
+            `;
+            tbody.appendChild(tr);
+        }
+
+        function renumberRows() {
+            document.querySelectorAll('#formItemsTableBody .item-row').forEach((row, idx) => {
+                row.querySelector('.row-idx').innerText = idx + 1;
+            });
+        }
+
+        function submitFormRequisition(e) {
+            e.preventDefault();
+            const dept = document.getElementById('formDept').value;
+            const purpose = document.getElementById('formPurpose').value;
+            const formTitle = document.getElementById('formModalTitle').innerText.split('(')[0].trim();
+            
+            let items = [];
+            document.querySelectorAll('#formItemsTableBody .item-row').forEach(row => {
+                items.push({
+                    name: row.querySelector('.item-name').value,
+                    code: row.querySelector('.item-code').value || '-',
+                    unit: row.querySelector('.item-unit').value,
+                    qty: row.querySelector('.item-qty').value,
+                    notes: row.querySelector('.item-notes').value || '-'
+                });
+            });
+
+            if (items.length === 0) {
+                alert("Please add at least one item to the form.");
+                return;
+            }
+
+            const newReq = {
+                id: `REQ-2026-${String(requests.length + 1).padStart(3, '0')}`,
+                date: new Date().toISOString().split('T')[0],
+                department: dept,
+                purpose: purpose,
+                formType: formTitle,
+                items: items,
+                status: "In Process",
+                lastStage: "Initiated by Level 1 (Requesting Dept)",
+                approverName: currentUser.email,
+                history: [
+                    { stage: "Initiated", by: currentUser.email, date: new Date().toLocaleString(), note: `Form created & submitted successfully.` }
+                ]
+            };
+
+            requests.unshift(newReq);
+            localStorage.setItem('noor_requests', JSON.stringify(requests));
+            closeFormModal();
+            renderDashboard();
+            alert(`Document ${newReq.id} successfully created and forwarded to Accounting (Level 2).`);
+        }
+
+        // Delete Requisition (Only requester level if not approved by 2nd level)
+        function deleteRequest(id) {
+            if (confirm(`Are you sure you want to delete requisition ${id}? This action cannot be undone.`)) {
+                requests = requests.filter(r => r.id !== id);
+                localStorage.setItem('noor_requests', JSON.stringify(requests));
+                renderDashboard();
+                alert(`Requisition ${id} deleted successfully.`);
+            }
+        }
+
+        // View & Approval Modal Logic
+        let currentViewingId = null;
+        function openViewModal(id) {
+            currentViewingId = id;
+            const req = requests.find(r => r.id === id);
+            if (!req) return;
+
+            document.getElementById('modalReqTitle').innerText = `${req.formType}: ${req.id} (${req.department})`;
+            document.getElementById('modalReqMeta').innerText = `Created on: ${req.date} | Purpose: ${req.purpose}`;
+
+            let itemsHtml = `
+                <div class="bg-slate-50 p-3 rounded-xl mb-4 border">
+                    <p class="font-bold text-noor-800 mb-2 uppercase text-[11px]">Requested Items Specification:</p>
+                    <table class="w-full text-xs bg-white rounded-lg border overflow-hidden">
+                        <thead><tr class="bg-slate-100 border-b"><th class="p-2">#</th><th class="p-2">Item Name</th><th class="p-2">Code</th><th class="p-2">Unit</th><th class="p-2">Qty</th><th class="p-2">Notes</th></tr></thead>
+                        <tbody>
+            `;
+            req.items.forEach((item, idx) => {
+                itemsHtml += `<tr class="border-b"><td class="p-2 text-center">${idx+1}</td><td class="p-2 font-medium">${item.name}</td><td class="p-2 text-center">${item.code}</td><td class="p-2 text-center">${item.unit}</td><td class="p-2 text-center font-bold">${item.qty}</td><td class="p-2">${item.notes}</td></tr>`;
+            });
+            itemsHtml += `</tbody></table></div>`;
+
+            let historyHtml = `
+                <div class="mt-4">
+                    <p class="font-bold text-noor-800 mb-2 uppercase text-[11px]">Audit Trail & Stage Approvals:</p>
+                    <div class="space-y-2">
+            `;
+            req.history.forEach(h => {
+                historyHtml += `
+                    <div class="text-xs bg-slate-50 p-2.5 rounded-xl border border-slate-200 flex justify-between items-center">
+                        <div>
+                            <span class="font-bold text-orange-600">[${h.stage}]</span> 
+                            <span class="text-slate-700 ml-1">${h.note}</span>
+                        </div>
+                        <div class="text-slate-400 text-[10px] text-right">
+                            <span>User: ${h.by}</span><br>
+                            <span>${h.date}</span>
+                        </div>
+                    </div>
+                `;
+            });
+            historyHtml += `</div></div>`;
+
+            document.getElementById('modalReqBody').innerHTML = itemsHtml + historyHtml;
+
+            const actionControls = document.getElementById('modalActionControls');
+            const notesContainer = document.getElementById('approvalNotesContainer');
+            document.getElementById('optionalApprovalNote').value = '';
+
+            let actionHtml = '';
+
+            if (req.status !== 'Closed' && req.status !== 'Rejected') {
+                if (currentUser.role === 'Accounting' && req.status === 'In Process') {
+                    notesContainer.classList.remove('hidden');
+                    actionHtml = `
+                        <button onclick="processApproval('${req.id}', 'Reject', 'Accounting')" class="px-4 py-2 bg-red-600 text-white rounded-xl text-xs font-bold hover:bg-red-700 shadow">Reject Request</button>
+                        <button onclick="processApproval('${req.id}', 'Approve', 'Accounting')" class="px-5 py-2 bg-emerald-600 text-white rounded-xl text-xs font-bold hover:bg-emerald-700 shadow">Approve & Forward to Warehouse (Level 2)</button>
+                    `;
+                } else if (currentUser.role === 'Warehouse' && (req.status === 'In Process' || req.status === 'Approved')) {
+                    notesContainer.classList.remove('hidden');
+                    actionHtml = `
+                        <button onclick="processApproval('${req.id}', 'Reject', 'Warehouse')" class="px-4 py-2 bg-red-600 text-white rounded-xl text-xs font-bold hover:bg-red-700 shadow">Reject Request</button>
+                        <button onclick="processApproval('${req.id}', 'Close', 'Warehouse')" class="px-5 py-2 bg-noor-800 text-white rounded-xl text-xs font-bold hover:bg-slate-900 shadow">Finalize Dispatch & Close Request (Level 3)</button>
+                    `;
+                } else {
+                    notesContainer.classList.add('hidden');
+                    actionHtml = `<span class="text-xs text-slate-400 italic">Awaiting action from respective department level...</span>`;
+                }
+            } else {
+                notesContainer.classList.add('hidden');
+                actionHtml = `<span class="text-xs font-bold text-slate-500">Document lifecycle is finalized (${req.status}).</span>`;
+            }
+
+            actionControls.innerHTML = actionHtml;
+            document.getElementById('viewRequestModal').classList.remove('hidden');
+        }
+
+        function closeViewModal() {
+            document.getElementById('viewRequestModal').classList.add('hidden');
+        }
+
+        function processApproval(id, action, deptRole) {
+            let req = requests.find(r => r.id === id);
+            if (!req) return;
+
+            const timestamp = new Date().toLocaleString();
+            const optionalNote = document.getElementById('optionalApprovalNote').value.trim();
+            const noteText = optionalNote ? `Note: ${optionalNote}` : `Action processed at ${deptRole} stage.`;
+
+            if (action === 'Approve') {
+                req.status = 'Approved';
+                req.lastStage = 'Approved by Accounting (Level 2)';
+                req.approverName = currentUser.email;
+                req.history.push({ stage: "Accounting Approval", by: currentUser.email, date: timestamp, note: noteText });
+            } else if (action === 'Close') {
+                req.status = 'Closed';
+                req.lastStage = 'Closed & Dispatched by Warehouse (Level 3)';
+                req.approverName = currentUser.email;
+                req.history.push({ stage: "Warehouse Dispatch / Closed", by: currentUser.email, date: timestamp, note: noteText });
+            } else if (action === 'Rejected' || action === 'Reject') {
+                req.status = 'Rejected';
+                req.lastStage = `Rejected by ${deptRole}`;
+                req.approverName = currentUser.email;
+                req.history.push({ stage: "Rejected", by: currentUser.email, date: timestamp, note: noteText });
+            }
+
+            localStorage.setItem('noor_requests', JSON.stringify(requests));
+            closeViewModal();
+            renderDashboard();
+            alert(`Document ${id} successfully updated to: ${req.status}`);
+        }
+
+        // Password Update
+        function openPasswordModal() {
+            document.getElementById('passwordModal').classList.remove('hidden');
+            document.getElementById('currentPassInput').value = '';
+            document.getElementById('newPassInput').value = '';
+        }
+
+        function closePasswordModal() {
+            document.getElementById('passwordModal').classList.add('hidden');
+        }
+
+        function handlePasswordUpdate(e) {
+            e.preventDefault();
+            const currentPass = document.getElementById('currentPassInput').value;
+            const newPass = document.getElementById('newPassInput').value;
+
+            if (usersDb[currentUser.email].pass === currentPass) {
+                usersDb[currentUser.email].pass = newPass;
+                localStorage.setItem('noor_users', JSON.stringify(usersDb));
+                closePasswordModal();
+                alert("Password successfully updated!");
+            } else {
+                alert("Incorrect current/last remembered password verification failed.");
+            }
+        }
+
+        // CSV Export
+        function exportTableToCSV() {
+            let csv = [];
+            let headers = ["Request ID", "Date", "Department", "Form Type", "Purpose", "Items Count", "Status", "Last Approval Stage", "Approver"];
+            csv.push(headers.join(","));
+
+            requests.forEach(r => {
+                let row = [
+                    r.id,
+                    r.date,
+                    `"${r.department}"`,
+                    `"${r.formType}"`,
+                    `"${r.purpose}"`,
+                    r.items.length,
+                    r.status,
+                    `"${r.lastStage}"`,
+                    `"${r.approverName || 'N/A'}"`
+                ];
+                csv.push(row.join(","));
+            });
+
+            let csvBlob = new Blob([csv.join("\n")], { type: 'text/csv;charset=utf-8;' });
+            let url = URL.createObjectURL(csvBlob);
+            let a = document.createElement('a');
+            a.setAttribute('href', url);
+            a.setAttribute('download', `AlNoor_Warehouse_Records_${new Date().toISOString().split('T')[0]}.csv`);
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        }
+    </script>
+</body>
+</html>
