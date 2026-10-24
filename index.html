@@ -22,10 +22,10 @@
                         noor: {
                             50: '#fff7ed',
                             100: '#ffedd5',
-                            500: '#f97316', // Official Noor Sunburst Orange Accent
+                            500: '#f97316',
                             600: '#ea580c',
                             700: '#c2410c',
-                            800: '#1e1b4b', // Deep Corporate Navy/Indigo matching official transport branding
+                            800: '#1e1b4b',
                             900: '#0f172a'
                         }
                     }
@@ -50,7 +50,7 @@
                         <span class="text-[10px] font-bold uppercase tracking-widest text-orange-200">SHINE WITH NOOR</span>
                     </div>
                     <h1 class="text-base md:text-lg font-black tracking-wide font-arabic">شركة النور المتحدة للوقود و النقليات</h1>
-                    <p class="text-[11px] text-slate-300 font-medium">Al Noor United Fuel & Transport Co. — ERP & Multi-Tier Routing</p>
+                    <p class="text-[11px] text-slate-300 font-medium">Al Noor United Fuel & Transport Co. — Multi-Tier Warehouse Routing</p>
                 </div>
             </div>
 
@@ -129,8 +129,8 @@
                         <select id="statusFilter" onchange="renderDashboard()" class="px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-2xl text-xs font-medium focus:outline-none focus:ring-2 focus:ring-noor-500">
                             <option value="ALL">All Documents</option>
                             <option value="Initiated">Initiated (Level 1)</option>
-                            <option value="In Process">In Process (Review)</option>
-                            <option value="Approved">Approved (Warehouse Ready)</option>
+                            <option value="In Process">In Process (Availability / Review)</option>
+                            <option value="Approved">Approved (Ready for Dispatch)</option>
                             <option value="Closed">Closed (Completed)</option>
                             <option value="Rejected">Rejected</option>
                         </select>
@@ -165,7 +165,7 @@
                 <div class="p-5 border-b border-slate-200/80 bg-slate-50/50 flex justify-between items-center">
                     <h3 class="font-bold text-noor-800 text-sm flex items-center space-x-2">
                         <i class="fa-solid fa-table-list text-noor-500"></i>
-                        <span>Transaction & Multi-Tier Approval Audit Logs</span>
+                        <span>Transaction & Multi-Tier Availability Audit Logs</span>
                     </h3>
                     <span id="recordCount" class="text-xs font-bold bg-orange-100 text-noor-700 px-3.5 py-1.5 rounded-full">0 Records</span>
                 </div>
@@ -220,7 +220,7 @@
                     <div>
                         <label class="block text-xs font-bold text-slate-700 mb-1.5">الطلب لأجل / البيان (Purpose / Remarks)</label>
                         <input type="text" id="formPurpose" required placeholder="e.g. Spare parts for Truck #402 or Office supplies" 
-                            class="w-full px-4 py-2.5 bg-white border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-noor-500 focus:outline-none transition">
+                            class="w-full px-4 py-2.5 bg-white border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-noor-500 focus:bg-white focus:outline-none transition">
                     </div>
                 </div>
 
@@ -254,16 +254,16 @@
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4 border-t border-slate-200 text-center text-xs text-slate-600">
                     <div class="bg-slate-50 p-4 rounded-2xl border border-dashed border-slate-300">
-                        <p class="font-bold text-slate-800 mb-1">توقيع المستلم (Receiver)</p>
+                        <p class="font-bold text-slate-800 mb-1">1. المستلم (Initiator)</p>
                         <div class="h-8 flex items-center justify-center text-slate-400 italic text-[11px]">Initiated</div>
                     </div>
                     <div class="bg-slate-50 p-4 rounded-2xl border border-dashed border-slate-300">
-                        <p class="font-bold text-slate-800 mb-1" id="routingManagerSignLabel">المسؤول المختص (Reviewer)</p>
-                        <div class="h-8 flex items-center justify-center text-slate-400 italic text-[11px]">Pending Review</div>
+                        <p class="font-bold text-slate-800 mb-1">2. أمين المخزن (Availability Check)</p>
+                        <div class="h-8 flex items-center justify-center text-slate-400 italic text-[11px]">Pending Stock Check</div>
                     </div>
                     <div class="bg-slate-50 p-4 rounded-2xl border border-dashed border-slate-300">
-                        <p class="font-bold text-slate-800 mb-1">أمين المخزن (Warehouse)</p>
-                        <div class="h-8 flex items-center justify-center text-slate-400 italic text-[11px]">Pending Warehouse</div>
+                        <p class="font-bold text-slate-800 mb-1" id="routingManagerSignLabel">3. المسؤول المختص (Manager Review)</p>
+                        <div class="h-8 flex items-center justify-center text-slate-400 italic text-[11px]">Pending Manager</div>
                     </div>
                 </div>
 
@@ -314,7 +314,7 @@
                 </div>
                 <div>
                     <label class="block text-xs font-semibold text-slate-700 mb-1.5">New Password</label>
-                    <input type="password" id="newPassInput" required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-noor-500 focus:outline-none">
+                    <input type="password" id="newPassInput" required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-2xl text-xs focus:ring-2 focus:ring-noor-500 focus:outline-none">
                 </div>
                 <div class="flex justify-end space-x-2 pt-3">
                     <button type="button" onclick="closePasswordModal()" class="px-4.5 py-2.5 border rounded-2xl text-xs hover:bg-slate-100 font-semibold">Cancel</button>
@@ -326,13 +326,13 @@
 
     <!-- JAVASCRIPT SYSTEM LOGIC -->
     <script>
-        // Case-insensitive users DB
+        // Users DB including Warehouse (wh@noor.com.sa), Accounting, Maintenance Manager, and Admin
         let usersDb = JSON.parse(localStorage.getItem('noor_users')) || {
             "req@noor.com.sa": { pass: "Noor@123", role: "Requesting", dept: "Service Department", canChangePass: false },
             "workshop@noor.com.sa": { pass: "Noor@123", role: "Requesting", dept: "Transport Workshop", canChangePass: true, workshopOnly: true },
+            "wh@noor.com.sa": { pass: "Noor@123", role: "Warehouse", dept: "Warehouse Department", canChangePass: true },
             "account@noor.com.sa": { pass: "Noor@123", role: "Accounting", dept: "Accounting Department", canChangePass: true },
             "maintenance@noor.com.sa": { pass: "Noor@123", role: "MaintenanceManager", dept: "Maintenance Manager", canChangePass: true },
-            "wh@noor.com.sa": { pass: "Noor@123", role: "Warehouse", dept: "Warehouse Department", canChangePass: true },
             "saif.ali@noor.com.sa": { pass: "72724@Noor", role: "AdminDeleteAll", dept: "System Administrator", canChangePass: true }
         };
 
@@ -445,7 +445,6 @@
                 } else {
                     warehouseMenuContainer.classList.remove('hidden');
                     
-                    // Restrict workshop@noor.com.sa to ONLY Material Requisition form
                     if (currentUser.workshopOnly) {
                         if (warehouseMenuBtnText) warehouseMenuBtnText.innerText = "New Material Requisition";
                         if (warehouseMenuOptions) {
@@ -456,7 +455,7 @@
                                 </button>
                             `;
                         }
-                    } else {
+                    } else if (currentUser.role === 'Requesting') {
                         if (warehouseMenuBtnText) warehouseMenuBtnText.innerText = "Warehouse Forms Library";
                         if (warehouseMenuOptions) {
                             warehouseMenuOptions.innerHTML = `
@@ -482,6 +481,9 @@
                                 </button>
                             `;
                         }
+                    } else {
+                        // For Warehouse, Accounting, Maintenance Manager
+                        warehouseMenuContainer.classList.add('hidden');
                     }
                 }
             }
@@ -565,9 +567,9 @@
 
             formDept.value = currentUser.dept;
             if (currentUser.email.toLowerCase() === 'req@noor.com.sa') {
-                routingManagerSignLabel.innerText = 'قسم المحاسبة (Accounting Dept)';
+                routingManagerSignLabel.innerText = '3. قسم المحاسبة (Accounting Dept)';
             } else {
-                routingManagerSignLabel.innerText = 'مدير الصيانة (Maintenance Manager)';
+                routingManagerSignLabel.innerText = '3. مدير الصيانة (Maintenance Manager)';
             }
             
             if (formModalTitle && formModalSubtitle) {
@@ -666,10 +668,10 @@
                 formType: formTitle,
                 items: items,
                 status: "In Process",
-                lastStage: `Initiated by ${currentUser.dept}`,
+                lastStage: `Initiated by ${currentUser.dept} -> Pending Warehouse Availability Check`,
                 approverName: currentUser.email,
                 history: [
-                    { stage: "Initiated", by: currentUser.email, date: new Date().toLocaleString(), note: `Form created & routed to ${routingTarget === 'Accounting' ? 'Accounting Department' : 'Maintenance Manager'}.` }
+                    { stage: "Initiated", by: currentUser.email, date: new Date().toLocaleString(), note: `Form created & routed to Warehouse for stock availability check.` }
                 ]
             };
 
@@ -677,7 +679,7 @@
             localStorage.setItem('noor_requests', JSON.stringify(requests));
             closeFormModal();
             renderDashboard();
-            alert(`Document ${newDoc.id} successfully created and routed to ${routingTarget === 'Accounting' ? 'Accounting Department' : 'Maintenance Manager'}.`);
+            alert(`Document ${newDoc.id} successfully created and sent to Warehouse for availability check (Level 2).`);
         }
 
         function deleteRequest(id) {
@@ -747,25 +749,43 @@
                 if (notesContainer) notesContainer.classList.add('hidden');
                 actionHtml = `<span class="text-xs font-bold text-slate-500">Administrator Mode: You can delete this document from the main table if needed.</span>`;
             } else if (req.status !== 'Closed' && req.status !== 'Rejected') {
+                let isWarehouse = (currentUser && currentUser.role === 'Warehouse');
                 let isAssignedReviewer = (currentUser && currentUser.role === 'Accounting' && req.routingTarget === 'Accounting') || 
                                          (currentUser && currentUser.role === 'MaintenanceManager' && req.routingTarget === 'MaintenanceManager');
-                let isWarehouse = (currentUser && currentUser.role === 'Warehouse');
 
-                if (isAssignedReviewer) {
+                // Check stage: 
+                // If lastStage includes 'Initiated', Warehouse must check availability first (Level 2).
+                // If lastStage includes 'Availability Checked', Department Manager (Accounting or Maintenance) approves (Level 3).
+                // If lastStage includes 'Approved', Warehouse finalizes and closes.
+
+                let isWarehouseAvailabilityStage = isWarehouse && req.lastStage.includes('Initiated');
+                let isManagerReviewStage = isAssignedReviewer && req.lastStage.includes('Availability Checked');
+                let isWarehouseFinalStage = isWarehouse && req.lastStage.includes('Approved by');
+
+                if (isWarehouseAvailabilityStage) {
+                    if (notesContainer) notesContainer.classList.remove('hidden');
+                    actionHtml = `
+                        <button onclick="processApproval('${req.id}', 'Reject', 'Warehouse')" class="px-4.5 py-2.5 bg-red-600 text-white rounded-2xl text-xs font-bold hover:bg-red-700 shadow-md">Reject (Out of Stock)</button>
+                        <button onclick="processApproval('${req.id}', 'StockAvailable', 'Warehouse')" class="px-5 py-2.5 bg-emerald-600 text-white rounded-2xl text-xs font-bold hover:bg-emerald-700 shadow-md">Confirm Stock Available & Forward to Manager (Level 2)</button>
+                    `;
+                } else if (isManagerReviewStage) {
                     if (notesContainer) notesContainer.classList.remove('hidden');
                     actionHtml = `
                         <button onclick="processApproval('${req.id}', 'Reject', '${currentUser.dept}')" class="px-4.5 py-2.5 bg-red-600 text-white rounded-2xl text-xs font-bold hover:bg-red-700 shadow-md">Reject Document</button>
-                        <button onclick="processApproval('${req.id}', 'ApproveReviewer', '${currentUser.dept}')" class="px-5 py-2.5 bg-emerald-600 text-white rounded-2xl text-xs font-bold hover:bg-emerald-700 shadow-md">Approve & Forward to Warehouse (Level 2)</button>
+                        <button onclick="processApproval('${req.id}', 'ApproveReviewer', '${currentUser.dept}')" class="px-5 py-2.5 bg-emerald-600 text-white rounded-2xl text-xs font-bold hover:bg-emerald-700 shadow-md">Approve & Forward to Warehouse (Level 3)</button>
                     `;
-                } else if (isWarehouse && req.lastStage.includes('Approved')) {
+                } else if (isWarehouseFinalStage) {
                     if (notesContainer) notesContainer.classList.remove('hidden');
                     actionHtml = `
                         <button onclick="processApproval('${req.id}', 'Reject', 'Warehouse')" class="px-4.5 py-2.5 bg-red-600 text-white rounded-2xl text-xs font-bold hover:bg-red-700 shadow-md">Reject Document</button>
-                        <button onclick="processApproval('${req.id}', 'Close', 'Warehouse')" class="px-5 py-2.5 bg-noor-800 text-white rounded-2xl text-xs font-bold hover:bg-slate-900 shadow-md">Finalize Dispatch & Close Document (Level 3)</button>
+                        <button onclick="processApproval('${req.id}', 'Close', 'Warehouse')" class="px-5 py-2.5 bg-noor-800 text-white rounded-2xl text-xs font-bold hover:bg-slate-900 shadow-md">Finalize Dispatch & Close Document (Final Level)</button>
                     `;
                 } else {
                     if (notesContainer) notesContainer.classList.add('hidden');
-                    actionHtml = `<span class="text-xs text-slate-400 italic">Awaiting action from assigned reviewer (${req.routingTarget || 'Reviewer'})...</span>`;
+                    let waitingMsg = req.lastStage.includes('Initiated') ? "Awaiting Warehouse Availability Check..." :
+                                     req.lastStage.includes('Availability Checked') ? `Awaiting Department Manager Review (${req.routingTarget})...` :
+                                     "Awaiting Warehouse Final Dispatch...";
+                    actionHtml = `<span class="text-xs text-slate-400 italic">${waitingMsg}</span>`;
                 }
             } else {
                 if (notesContainer) notesContainer.classList.add('hidden');
@@ -791,14 +811,19 @@
             const optionalNote = optionalNoteEl ? optionalNoteEl.value.trim() : '';
             const noteText = optionalNote ? `Note: ${optionalNote}` : `Action processed at ${deptRole} stage.`;
 
-            if (action === 'ApproveReviewer') {
+            if (action === 'StockAvailable') {
+                req.status = 'In Process';
+                req.lastStage = 'Availability Checked by Warehouse -> Pending Department Manager Review';
+                req.approverName = currentUser.email;
+                req.history.push({ stage: "Warehouse Availability Check", by: currentUser.email, date: timestamp, note: `Stock confirmed available. ${noteText}` });
+            } else if (action === 'ApproveReviewer') {
                 req.status = 'Approved';
-                req.lastStage = `Approved by ${deptRole} (Level 2)`;
+                req.lastStage = `Approved by ${deptRole} -> Ready for Warehouse Dispatch`;
                 req.approverName = currentUser.email;
                 req.history.push({ stage: `${deptRole} Approval`, by: currentUser.email, date: timestamp, note: noteText });
             } else if (action === 'Close') {
                 req.status = 'Closed';
-                req.lastStage = 'Closed & Dispatched by Warehouse (Level 3)';
+                req.lastStage = 'Closed & Dispatched by Warehouse (Final)';
                 req.approverName = currentUser.email;
                 req.history.push({ stage: "Warehouse Dispatch / Closed", by: currentUser.email, date: timestamp, note: noteText });
             } else if (action === 'Rejected' || action === 'Reject') {
@@ -811,7 +836,7 @@
             localStorage.setItem('noor_requests', JSON.stringify(requests));
             closeViewModal();
             renderDashboard();
-            alert(`Document ${id} successfully updated to: ${req.status}`);
+            alert(`Document ${id} successfully updated to status: ${req.status}`);
         }
 
         function openPasswordModal() {
