@@ -40,8 +40,9 @@
     <header class="bg-noor-800 text-white shadow-md border-b-4 border-noor-500">
         <div class="max-w-7xl mx-auto px-4 py-3 flex flex-col md:flex-row justify-between items-center">
             <div class="flex items-center space-x-4">
-                <div class="w-12 h-12 bg-gradient-to-tr from-noor-500 to-amber-400 rounded-full flex items-center justify-center text-white shadow-lg relative overflow-hidden ring-2 ring-white/20">
-                    <i class="fa-solid fa-sun text-2xl animate-spin" style="animation-duration: 20s;"></i>
+                <div id="headerLogoContainer" class="w-12 h-12 bg-gradient-to-tr from-noor-500 to-amber-400 rounded-full flex items-center justify-center text-white shadow-lg relative overflow-hidden ring-2 ring-white/20">
+                    <i id="headerLogoIcon" class="fa-solid fa-sun text-2xl animate-spin" style="animation-duration: 20s;"></i>
+                    <img id="headerLogoImg" class="hidden w-full h-full object-cover" alt="Al Noor Logo">
                 </div>
                 <div>
                     <div class="inline-flex items-center space-x-2 bg-white/10 px-2.5 py-0.5 rounded-full mb-1 border border-white/10">
@@ -49,7 +50,7 @@
                         <span class="text-[10px] font-bold uppercase tracking-widest text-orange-200">SHINE WITH NOOR</span>
                     </div>
                     <h1 class="text-base md:text-lg font-black tracking-wide font-arabic">شركة النور المتحدة للوقود و النقليات</h1>
-                    <p class="text-[11px] text-slate-300 font-medium">Al Noor United Fuel & Transport Co. — Warehouse Requisition & ERP System</p>
+                    <p class="text-[11px] text-slate-300 font-medium">Al Noor United Fuel & Transport Co. — ERP & Multi-Tier Routing</p>
                 </div>
             </div>
 
@@ -59,7 +60,7 @@
                     <span id="displayUserRole" class="block text-[11px] font-bold uppercase tracking-wider text-orange-300 bg-black/30 px-2.5 py-0.5 rounded-full"></span>
                     <span id="displayUserId" class="text-xs font-semibold text-slate-200"></span>
                 </div>
-                <button onclick="openPasswordModal()" class="text-xs bg-white/10 hover:bg-white/20 text-white font-medium px-3 py-1.5 rounded border border-white/20 transition flex items-center space-x-1.5">
+                <button id="passwordChangeBtn" onclick="openPasswordModal()" class="hidden text-xs bg-white/10 hover:bg-white/20 text-white font-medium px-3 py-1.5 rounded border border-white/20 transition flex items-center space-x-1.5">
                     <i class="fa-solid fa-key"></i>
                     <span>Password</span>
                 </button>
@@ -81,7 +82,7 @@
                     <i class="fa-solid fa-sun animate-spin" style="animation-duration: 25s;"></i>
                 </div>
                 <h2 class="text-2xl font-bold text-noor-800">Department Portal</h2>
-                <p class="text-xs text-slate-500 mt-1">Sign in with your department credentials to proceed</p>
+                <p class="text-xs text-slate-500 mt-1">Sign in with department credentials (Case-Insensitive)</p>
             </div>
 
             <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-4">
@@ -89,7 +90,7 @@
                     <label class="block text-xs font-bold text-slate-700 mb-1">User ID / Email</label>
                     <div class="relative">
                         <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400"><i class="fa-solid fa-user"></i></span>
-                        <input type="email" id="loginEmail" required placeholder="e.g. Req@noor.com.sa" 
+                        <input type="text" id="loginEmail" required placeholder="e.g. req@noor.com.sa" 
                             class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:ring-2 focus:ring-noor-500 focus:bg-white focus:outline-none transition">
                     </div>
                 </div>
@@ -107,25 +108,28 @@
                 </button>
             </form>
 
-            <div class="mt-6 pt-4 border-t border-slate-100 text-center text-[11px] text-slate-400">
-                <p>Al Noor United Fuel & Transport Co. © 2026. Internal System Protected.</p>
+            <div class="mt-6 pt-4 border-t border-slate-100 text-center">
+                <label class="cursor-pointer text-[11px] text-noor-600 hover:underline font-semibold inline-flex items-center space-x-1">
+                    <i class="fa-solid fa-upload"></i>
+                    <span>Upload Custom Company Logo</span>
+                    <input type="file" id="logoUploadInput" accept="image/*" onchange="handleLogoUpload(event)" class="hidden">
+                </label>
             </div>
         </div>
 
         <!-- DASHBOARD VIEW -->
         <div id="dashboardView" class="hidden space-y-6">
             
-            <!-- Dashboard Action Bar & Tabs -->
+            <!-- Action Bar -->
             <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 flex flex-col lg:flex-row justify-between items-center gap-4">
                 
-                <!-- Filter and Search -->
                 <div class="flex flex-wrap items-center gap-3 w-full lg:w-auto">
                     <div class="flex items-center space-x-2">
                         <span class="text-xs font-bold text-slate-600">Status:</span>
                         <select id="statusFilter" onchange="renderDashboard()" class="px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs font-medium focus:outline-none focus:ring-2 focus:ring-noor-500">
-                            <option value="ALL">All Requests</option>
+                            <option value="ALL">All Documents</option>
                             <option value="Initiated">Initiated (Level 1)</option>
-                            <option value="In Process">In Process (Accounting)</option>
+                            <option value="In Process">In Process (Review)</option>
                             <option value="Approved">Approved (Warehouse Ready)</option>
                             <option value="Closed">Closed (Completed)</option>
                             <option value="Rejected">Rejected</option>
@@ -133,40 +137,39 @@
                     </div>
                 </div>
 
-                <!-- Action Buttons -->
                 <div class="flex flex-wrap items-center gap-3 w-full lg:w-auto justify-end">
                     <!-- Warehouse Form Library Dropdown -->
                     <div class="relative">
                         <button onclick="toggleWarehouseMenu()" class="bg-gradient-to-r from-noor-500 to-amber-500 hover:from-noor-600 hover:to-amber-600 text-white font-bold px-4 py-2 rounded-xl text-xs shadow transition flex items-center space-x-2">
-                            <i class="fa-solid fa-book-open"></i>
-                            <span>Warehouse Forms Library</span>
+                            <i class="fa-solid fa-folder-plus"></i>
+                            <span>Warehouse Forms Library (Extended)</span>
                             <i class="fa-solid fa-chevron-down text-[10px]"></i>
                         </button>
-                        <div id="warehouseMenu" class="hidden absolute right-0 mt-2 w-72 bg-white rounded-xl shadow-2xl border border-slate-200 z-50 py-2">
-                            <div class="px-3 py-1.5 text-[11px] font-bold text-slate-400 uppercase tracking-wider border-b">Standard Warehouse Documents</div>
+                        <div id="warehouseMenu" class="hidden absolute right-0 mt-2 w-80 bg-white rounded-xl shadow-2xl border border-slate-200 z-50 py-2">
+                            <div class="px-3 py-1.5 text-[11px] font-bold text-slate-400 uppercase tracking-wider border-b">Select Form to Issue</div>
                             <button onclick="openFormModal('Material Requisition')" class="w-full text-left px-4 py-2.5 text-xs text-slate-700 hover:bg-orange-50 hover:text-noor-600 flex items-center space-x-2">
-                                <i class="fa-solid fa-file-invoice text-noor-500"></i>
+                                <i class="fa-solid fa-file-invoice text-noor-500 w-5"></i>
                                 <span>أمر صرف مواد من المخزن (Material Requisition)</span>
                             </button>
                             <button onclick="openFormModal('Stock Receipt')" class="w-full text-left px-4 py-2.5 text-xs text-slate-700 hover:bg-orange-50 hover:text-noor-600 flex items-center space-x-2">
-                                <i class="fa-solid fa-boxes-stacked text-noor-500"></i>
+                                <i class="fa-solid fa-boxes-stacked text-noor-500 w-5"></i>
                                 <span>إيصال استلام مواد للمخزن (Goods Receipt Note)</span>
                             </button>
                             <button onclick="openFormModal('Stock Transfer')" class="w-full text-left px-4 py-2.5 text-xs text-slate-700 hover:bg-orange-50 hover:text-noor-600 flex items-center space-x-2">
-                                <i class="fa-solid fa-truck-ramp-box text-noor-500"></i>
+                                <i class="fa-solid fa-truck-ramp-box text-noor-500 w-5"></i>
                                 <span>سند تحويل بين المستودعات (Stock Transfer)</span>
                             </button>
+                            <button onclick="openFormModal('Custody Bond')" class="w-full text-left px-4 py-2.5 text-xs text-slate-700 hover:bg-orange-50 hover:text-noor-600 flex items-center space-x-2">
+                                <i class="fa-solid fa-hand-holding-hand text-noor-500 w-5"></i>
+                                <span>سند عهدة مواد / معدات (Custody Bond Form)</span>
+                            </button>
                             <button onclick="openFormModal('Inventory Audit')" class="w-full text-left px-4 py-2.5 text-xs text-slate-700 hover:bg-orange-50 hover:text-noor-600 flex items-center space-x-2">
-                                <i class="fa-solid fa-clipboard-check text-noor-500"></i>
+                                <i class="fa-solid fa-clipboard-check text-noor-500 w-5"></i>
                                 <span>محضر جرد المخزن (Stock Audit Sheet)</span>
                             </button>
                         </div>
                     </div>
 
-                    <button id="newRequisitionBtn" onclick="openFormModal('Material Requisition')" class="hidden bg-noor-800 hover:bg-slate-900 text-white font-bold px-4 py-2 rounded-xl text-xs shadow transition flex items-center space-x-2">
-                        <i class="fa-solid fa-plus"></i>
-                        <span>New Material Requisition</span>
-                    </button>
                     <button onclick="exportTableToCSV()" class="bg-slate-800 hover:bg-slate-900 text-white font-medium px-4 py-2 rounded-xl text-xs transition flex items-center space-x-2">
                         <i class="fa-solid fa-download"></i>
                         <span>Download CSV</span>
@@ -179,7 +182,7 @@
                 <div class="p-4 border-b border-slate-200 bg-slate-50 flex justify-between items-center">
                     <h3 class="font-bold text-noor-800 text-sm flex items-center space-x-2">
                         <i class="fa-solid fa-table-list text-noor-500"></i>
-                        <span>Requisition & Transaction Audit Logs</span>
+                        <span>Transaction & Multi-Tier Approval Audit Logs</span>
                     </h3>
                     <span id="recordCount" class="text-xs font-bold bg-orange-100 text-noor-700 px-3 py-1 rounded-full">0 Records</span>
                 </div>
@@ -187,10 +190,10 @@
                     <table class="w-full text-left border-collapse">
                         <thead>
                             <tr class="bg-noor-800 text-white text-[11px] uppercase tracking-wider">
-                                <th class="p-3">Req ID</th>
+                                <th class="p-3">Doc ID</th>
                                 <th class="p-3">Date</th>
-                                <th class="p-3">Department</th>
-                                <th class="p-3">Purpose / الطلب لأجل</th>
+                                <th class="p-3">Requester Type</th>
+                                <th class="p-3">Form Type & Purpose / الطلب</th>
                                 <th class="p-3">Items Count</th>
                                 <th class="p-3">Current Status</th>
                                 <th class="p-3">Last Approval Stage & Approver</th>
@@ -198,7 +201,7 @@
                             </tr>
                         </thead>
                         <tbody id="requestsTableBody" class="divide-y divide-slate-100 text-xs">
-                            <!-- Populated dynamically via JS -->
+                            <!-- Populated dynamically -->
                         </tbody>
                     </table>
                 </div>
@@ -212,14 +215,14 @@
         &copy; 2026 Al Noor United Fuel & Transport Co. (شركة النور المتحدة للوقود و النقليات). All rights reserved.
     </footer>
 
-    <!-- WAREHOUSE & REQUISITION FORM MODAL -->
+    <!-- DYNAMIC FORM MODAL -->
     <div id="formModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center p-4 overflow-y-auto">
         <div class="bg-white rounded-2xl shadow-2xl max-w-5xl w-full max-h-[90vh] overflow-y-auto p-6 md:p-8 border-t-4 border-noor-500">
             
             <div class="flex justify-between items-start border-b pb-4 mb-4">
                 <div>
                     <h3 id="formModalTitle" class="text-xl font-black text-noor-800 font-arabic">أمر صرف مواد من المخزن</h3>
-                    <p class="text-xs text-slate-500">Al Noor United Official Warehouse Requisition Form (Level 1 Initiation)</p>
+                    <p id="formModalSubtitle" class="text-xs text-slate-500">Al Noor United Official Warehouse Document</p>
                 </div>
                 <button onclick="closeFormModal()" class="text-slate-400 hover:text-slate-600 font-bold text-xl p-2">&times;</button>
             </div>
@@ -228,20 +231,19 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 bg-slate-50 p-4 rounded-xl border border-slate-200">
                     <div>
                         <label class="block text-xs font-bold text-slate-700 mb-1">الجهة الطالبة (Requesting Department)</label>
-                        <input type="text" id="formDept" required placeholder="e.g. Fleet Maintenance Dept" 
-                            class="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-noor-500 focus:outline-none">
+                        <input type="text" id="formDept" readonly 
+                            class="w-full px-3 py-2 bg-slate-200 border border-slate-300 rounded-xl text-xs font-bold text-slate-700 cursor-not-allowed">
                     </div>
                     <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">الطلب لأجل (Purpose / For Reason)</label>
-                        <input type="text" id="formPurpose" required placeholder="e.g. Spare parts for Truck #402" 
+                        <label class="block text-xs font-bold text-slate-700 mb-1">الطلب لأجل / البيان (Purpose / Remarks)</label>
+                        <input type="text" id="formPurpose" required placeholder="e.g. Spare parts for Truck #402 or Office supplies" 
                             class="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-noor-500 focus:outline-none">
                     </div>
                 </div>
 
-                <!-- Items Table -->
                 <div>
                     <div class="flex justify-between items-center mb-2">
-                        <label class="text-xs font-black text-noor-800 uppercase font-arabic">المطلوب صرف الأصناف المذكورة أدناه (Requested Items List)</label>
+                        <label class="text-xs font-black text-noor-800 uppercase font-arabic">الأصناف المطلوبة (Items / Assets List)</label>
                         <button type="button" onclick="addItemRow()" class="text-xs bg-orange-100 text-noor-700 px-3 py-1.5 rounded-xl font-bold hover:bg-orange-200 transition flex items-center space-x-1">
                             <i class="fa-solid fa-plus"></i>
                             <span>Add Item Row</span>
@@ -252,11 +254,11 @@
                             <thead class="bg-noor-800 text-white border-b">
                                 <tr>
                                     <th class="p-2.5 w-12">م</th>
-                                    <th class="p-2.5" style="width: 32%;">إسم الصنف (Item Name)</th>
-                                    <th class="p-2.5" style="width: 15%;">كود صنف (Code)</th>
+                                    <th class="p-2.5" style="width: 32%;">إسم الصنف / الأداة (Item Name)</th>
+                                    <th class="p-2.5" style="width: 15%;">كود صنف (Code / Serial)</th>
                                     <th class="p-2.5" style="width: 12%;">الوحدة (Unit)</th>
                                     <th class="p-2.5" style="width: 12%;">الكمية (Qty)</th>
-                                    <th class="p-2.5" style="width: 22%;">ملاحظات (Notes)</th>
+                                    <th class="p-2.5" style="width: 22%;">ملاحظات / الحالة (Notes / Condition)</th>
                                     <th class="p-2.5 w-10"></th>
                                 </tr>
                             </thead>
@@ -267,19 +269,18 @@
                     </div>
                 </div>
 
-                <!-- Signatures Section -->
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4 border-t border-slate-200 text-center text-xs text-slate-600">
                     <div class="bg-slate-50 p-3 rounded-xl border border-dashed border-slate-300">
-                        <p class="font-bold text-slate-800">توقيع الفني (Technical Signature)</p>
-                        <div class="h-10 flex items-center justify-center text-slate-400 italic">Pending Dispatch</div>
+                        <p class="font-bold text-slate-800">توقيع المستلم (Receiver)</p>
+                        <div class="h-10 flex items-center justify-center text-slate-400 italic">Initiated</div>
                     </div>
                     <div class="bg-slate-50 p-3 rounded-xl border border-dashed border-slate-300">
-                        <p class="font-bold text-slate-800">أمين المخزن (Warehouse Keeper)</p>
-                        <div class="h-10 flex items-center justify-center text-slate-400 italic">Pending Approval</div>
+                        <p class="font-bold text-slate-800" id="routingManagerSignLabel">المسؤول المختص (Reviewer)</p>
+                        <div class="h-10 flex items-center justify-center text-slate-400 italic">Pending Review</div>
                     </div>
                     <div class="bg-slate-50 p-3 rounded-xl border border-dashed border-slate-300">
-                        <p class="font-bold text-slate-800">المدير المسؤول (Responsible Manager)</p>
-                        <div class="h-10 flex items-center justify-center text-slate-400 italic">Pending Authorization</div>
+                        <p class="font-bold text-slate-800">أمين المخزن (Warehouse)</p>
+                        <div class="h-10 flex items-center justify-center text-slate-400 italic">Pending Warehouse</div>
                     </div>
                 </div>
 
@@ -287,7 +288,7 @@
                     <button type="button" onclick="closeFormModal()" class="px-5 py-2.5 border border-slate-300 rounded-xl text-xs text-slate-600 hover:bg-slate-100 transition">Cancel</button>
                     <button type="submit" class="px-6 py-2.5 bg-gradient-to-r from-noor-500 to-amber-500 hover:from-noor-600 hover:to-amber-600 text-white rounded-xl text-xs font-bold shadow transition flex items-center space-x-2">
                         <i class="fa-solid fa-paper-plane"></i>
-                        <span>Submit Requisition (Level 1)</span>
+                        <span>Submit Document</span>
                     </button>
                 </div>
             </form>
@@ -299,7 +300,7 @@
         <div class="bg-white rounded-2xl shadow-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto p-6 md:p-8 border-t-4 border-noor-500">
             <div class="flex justify-between items-start border-b pb-4 mb-4">
                 <div>
-                    <h3 id="modalReqTitle" class="text-xl font-bold text-noor-800">Request Details</h3>
+                    <h3 id="modalReqTitle" class="text-xl font-bold text-noor-800">Document Details</h3>
                     <p id="modalReqMeta" class="text-xs text-slate-500 mt-0.5"></p>
                 </div>
                 <button onclick="closeViewModal()" class="text-slate-400 hover:text-slate-600 font-bold text-xl p-2">&times;</button>
@@ -308,8 +309,8 @@
             <div id="modalReqBody" class="space-y-4 text-xs"></div>
 
             <div id="approvalNotesContainer" class="mt-4 pt-4 border-t border-slate-200 hidden">
-                <label class="block text-xs font-bold text-slate-700 mb-1">Optional Approval / Rejection Notes (ملاحظات الاختيار)</label>
-                <textarea id="optionalApprovalNote" rows="2" placeholder="Add any specific remarks or conditions for this action..." 
+                <label class="block text-xs font-bold text-slate-700 mb-1">Optional Approval / Rejection Notes (ملاحظات)</label>
+                <textarea id="optionalApprovalNote" rows="2" placeholder="Add any specific remarks or conditions..." 
                     class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-noor-500 focus:outline-none"></textarea>
             </div>
 
@@ -321,11 +322,11 @@
     <div id="passwordModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 border-t-4 border-noor-800">
             <h3 class="text-lg font-bold text-noor-800 mb-1">Update Department Password</h3>
-            <p class="text-xs text-slate-500 mb-4">Verify your last remembered password to establish a new one securely.</p>
+            <p class="text-xs text-slate-500 mb-4">Verify your current/last remembered password to establish a new one.</p>
             
             <form onsubmit="handlePasswordUpdate(event)" class="space-y-3">
                 <div>
-                    <label class="block text-xs font-semibold text-slate-700 mb-1">Current / Last Remembered Password</label>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Current Password</label>
                     <input type="password" id="currentPassInput" required class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-noor-500 focus:outline-none">
                 </div>
                 <div>
@@ -342,52 +343,62 @@
 
     <!-- JAVASCRIPT SYSTEM LOGIC -->
     <script>
+        // Case-insensitive users DB
+        // req@noor.com.sa -> Service Dept (No password change access)
+        // workshop@noor.com.sa -> Transport Dept (Can change password)
+        // account@noor.com.sa -> Accounting Dept for Service requests (Can change password)
+        // maintenance@noor.com.sa -> Maintenance Manager for Transport requests (Can change password)
+        // wh@noor.com.sa -> Warehouse Dept (Can change password)
         let usersDb = JSON.parse(localStorage.getItem('noor_users')) || {
-            "Req@noor.com.sa": { pass: "Noor@123", role: "Requesting", dept: "Level 1 - Requesting Department" },
-            "Account@noor.com.sa": { pass: "Noor@123", role: "Accounting", dept: "Level 2 - Accounting Department" },
-            "Wh@noor.com.sa": { pass: "Noor@123", role: "Warehouse", dept: "Level 3 - Warehouse Department" }
+            "req@noor.com.sa": { pass: "Noor@123", role: "Requesting", dept: "Service Department", canChangePass: false },
+            "workshop@noor.com.sa": { pass: "Noor@123", role: "Requesting", dept: "Transport Workshop", canChangePass: true },
+            "account@noor.com.sa": { pass: "Noor@123", role: "Accounting", dept: "Accounting Department", canChangePass: true },
+            "maintenance@noor.com.sa": { pass: "Noor@123", role: "MaintenanceManager", dept: "Maintenance Manager", canChangePass: true },
+            "wh@noor.com.sa": { pass: "Noor@123", role: "Warehouse", dept: "Warehouse Department", canChangePass: true }
         };
 
         let currentUser = JSON.parse(localStorage.getItem('noor_current_user')) || null;
+        let customLogoData = localStorage.getItem('noor_custom_logo') || null;
 
         let requests = JSON.parse(localStorage.getItem('noor_requests')) || [
             {
-                id: "REQ-2026-001",
+                id: "DOC-2026-001",
                 date: "2026-10-24",
-                department: "Transport Operations",
-                purpose: "Heavy vehicle brake pads and lubricant oil",
+                department: "Service Department",
+                routingTarget: "Accounting",
+                purpose: "Office printer cartridges and paper",
                 formType: "Material Requisition",
                 items: [
-                    { name: "Brake Pads Heavy Duty", code: "BP-992", unit: "Sets", qty: 4, notes: "Urgent replacement" },
-                    { name: "Synthetic Engine Oil 15W40", code: "OIL-154", unit: "drums", qty: 2, notes: "Regular maintenance" }
+                    { name: "Printer Toner Black", code: "TN-401", unit: "Pcs", qty: 2, notes: "Office use" }
                 ],
                 status: "In Process",
-                lastStage: "Initiated by Level 1",
-                approverName: "Req@noor.com.sa",
+                lastStage: "Initiated by Service Dept",
+                approverName: "req@noor.com.sa",
                 history: [
-                    { stage: "Initiated", by: "Req@noor.com.sa", date: "2026-10-24 08:30", note: "Created requisition form" }
+                    { stage: "Initiated", by: "req@noor.com.sa", date: "2026-10-24 08:30", note: "Created by Service Department" }
                 ]
             },
             {
-                id: "REQ-2026-002",
-                date: "2026-10-23",
-                department: "Logistics Fleet",
-                purpose: "Uniform safety jackets & gloves",
+                id: "DOC-2026-002",
+                date: "2026-10-24",
+                department: "Transport Workshop",
+                routingTarget: "MaintenanceManager",
+                purpose: "Heavy vehicle brake pads",
                 formType: "Material Requisition",
                 items: [
-                    { name: "Reflective Safety Jacket", code: "JKT-01", unit: "Pcs", qty: 25, notes: "Standard issue" }
+                    { name: "Brake Pads Heavy Duty", code: "BP-992", unit: "Sets", qty: 4, notes: "Truck #402" }
                 ],
-                status: "Approved",
-                lastStage: "Approved by Accounting (Level 2)",
-                approverName: "Account@noor.com.sa",
+                status: "In Process",
+                lastStage: "Initiated by Transport Workshop",
+                approverName: "workshop@noor.com.sa",
                 history: [
-                    { stage: "Initiated", by: "Req@noor.com.sa", date: "2026-10-23 10:15", note: "Created requisition form" },
-                    { stage: "In Process / Approved", by: "Account@noor.com.sa", date: "2026-10-23 14:00", note: "Budget verified and approved" }
+                    { stage: "Initiated", by: "workshop@noor.com.sa", date: "2026-10-24 09:15", note: "Created by Transport Workshop" }
                 ]
             }
         ];
 
         window.onload = function() {
+            applyCustomLogo();
             if (currentUser) {
                 showDashboard();
             } else {
@@ -401,13 +412,40 @@
             };
         };
 
+        function handleLogoUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    customLogoData = e.target.result;
+                    localStorage.setItem('noor_custom_logo', customLogoData);
+                    applyCustomLogo();
+                    alert("Custom company logo updated successfully!");
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function applyCustomLogo() {
+            const imgEl = document.getElementById('headerLogoImg');
+            const iconEl = document.getElementById('headerLogoIcon');
+            if (customLogoData && imgEl && iconEl) {
+                imgEl.src = customLogoData;
+                imgEl.classList.remove('hidden');
+                iconEl.classList.add('hidden');
+            }
+        }
+
+        // Case-Insensitive Login Handler
         function handleLogin(e) {
             e.preventDefault();
-            const email = document.getElementById('loginEmail').value.trim();
+            const inputEmail = document.getElementById('loginEmail').value.trim().toLowerCase();
             const pass = document.getElementById('loginPassword').value;
 
-            if (usersDb[email] && usersDb[email].pass === pass) {
-                currentUser = { email, ...usersDb[email] };
+            let matchedKey = Object.keys(usersDb).find(k => k.toLowerCase() === inputEmail);
+
+            if (matchedKey && usersDb[matchedKey].pass === pass) {
+                currentUser = { email: matchedKey, ...usersDb[matchedKey] };
                 localStorage.setItem('noor_current_user', JSON.stringify(currentUser));
                 showDashboard();
             } else {
@@ -439,7 +477,7 @@
             const userSessionHeader = document.getElementById('userSessionHeader');
             const displayUserId = document.getElementById('displayUserId');
             const displayUserRole = document.getElementById('displayUserRole');
-            const newRequisitionBtn = document.getElementById('newRequisitionBtn');
+            const passwordChangeBtn = document.getElementById('passwordChangeBtn');
 
             if (loginView) loginView.classList.add('hidden');
             if (dashboardView) dashboardView.classList.remove('hidden');
@@ -448,11 +486,12 @@
             if (displayUserId) displayUserId.innerText = currentUser.email;
             if (displayUserRole) displayUserRole.innerText = currentUser.dept;
 
-            if (newRequisitionBtn) {
-                if (currentUser.role === 'Requesting') {
-                    newRequisitionBtn.classList.remove('hidden');
+            // Show password change button only if user has permission (e.g. workshop, account, maintenance, wh - NOT req@noor.com.sa)
+            if (passwordChangeBtn) {
+                if (currentUser.canChangePass) {
+                    passwordChangeBtn.classList.remove('hidden');
                 } else {
-                    newRequisitionBtn.classList.add('hidden');
+                    passwordChangeBtn.classList.add('hidden');
                 }
             }
 
@@ -480,7 +519,7 @@
             if (recordCount) recordCount.innerText = `${filtered.length} Records`;
 
             if (filtered.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="8" class="text-center py-6 text-slate-400 italic">No requisition records found.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="8" class="text-center py-6 text-slate-400 italic">No document records found.</td></tr>`;
                 return;
             }
 
@@ -491,7 +530,7 @@
                 if (req.status === 'Closed') badgeColor = "bg-green-100 text-green-800";
                 if (req.status === 'Rejected') badgeColor = "bg-red-100 text-red-800";
 
-                let canDelete = (currentUser && currentUser.role === 'Requesting' && (req.status === 'Initiated' || req.status === 'In Process') && req.lastStage && req.lastStage.includes('Initiated'));
+                let canDelete = (currentUser && currentUser.role === 'Requesting' && req.approverName.toLowerCase() === currentUser.email.toLowerCase() && (req.status === 'Initiated' || req.status === 'In Process') && req.lastStage && req.lastStage.includes('Initiated'));
 
                 let tr = document.createElement('tr');
                 tr.className = "hover:bg-slate-50 transition";
@@ -510,20 +549,49 @@
                         <button onclick="openViewModal('${req.id}')" class="bg-orange-50 hover:bg-orange-100 text-noor-700 font-medium px-3 py-1 rounded-lg text-xs transition">
                             View / Review
                         </button>
-                        ${canDelete ? `<button onclick="deleteRequest('${req.id}')" class="bg-red-50 hover:bg-red-100 text-red-600 font-medium px-2.5 py-1 rounded-lg text-xs transition" title="Delete Requisition"><i class="fa-solid fa-trash"></i></button>` : ''}
+                        ${canDelete ? `<button onclick="deleteRequest('${req.id}')" class="bg-red-50 hover:bg-red-100 text-red-600 font-medium px-2.5 py-1 rounded-lg text-xs transition" title="Delete Document"><i class="fa-solid fa-trash"></i></button>` : ''}
                     </td>
                 `;
                 tbody.appendChild(tr);
             });
         }
 
+        // Form Modal launcher based on current requester
         function openFormModal(formTypeName) {
+            if (!currentUser || currentUser.role !== 'Requesting') {
+                alert("Only Requesting Department users (Service Dept or Transport Workshop) can initiate new forms.");
+                return;
+            }
+
             const formModalTitle = document.getElementById('formModalTitle');
-            if (formModalTitle) {
-                formModalTitle.innerText = 
-                    formTypeName === 'Material Requisition' ? 'أمر صرف مواد من المخزن (Material Requisition)' :
-                    formTypeName === 'Stock Receipt' ? 'إيصال استلام مواد للمخزن (Goods Receipt Note)' :
-                    formTypeName === 'Stock Transfer' ? 'سند تحويل بين المستودعات (Stock Transfer)' : 'محضر جرد المخزن (Stock Audit Sheet)';
+            const formModalSubtitle = document.getElementById('formModalSubtitle');
+            const formDept = document.getElementById('formDept');
+            const routingManagerSignLabel = document.getElementById('routingManagerSignLabel');
+
+            formDept.value = currentUser.dept;
+            if (currentUser.email.toLowerCase() === 'req@noor.com.sa') {
+                routingManagerSignLabel.innerText = 'قسم المحاسبة (Accounting Dept)';
+            } else {
+                routingManagerSignLabel.innerText = 'مدير الصيانة (Maintenance Manager)';
+            }
+            
+            if (formModalTitle && formModalSubtitle) {
+                if (formTypeName === 'Material Requisition') {
+                    formModalTitle.innerText = 'أمر صرف مواد من المخزن (Material Requisition)';
+                    formModalSubtitle.innerText = `Al Noor United Warehouse Material Requisition (${currentUser.dept})`;
+                } else if (formTypeName === 'Stock Receipt') {
+                    formModalTitle.innerText = 'إيصال استلام مواد للمخزن (Goods Receipt Note)';
+                    formModalSubtitle.innerText = `Al Noor United Inbound Goods Receipt (${currentUser.dept})`;
+                } else if (formTypeName === 'Stock Transfer') {
+                    formModalTitle.innerText = 'سند تحويل بين المستودعات (Stock Transfer Form)';
+                    formModalSubtitle.innerText = `Al Noor United Inter-Branch Stock Transfer (${currentUser.dept})`;
+                } else if (formTypeName === 'Custody Bond') {
+                    formModalTitle.innerText = 'سند عهدة مواد / معدات (Custody Bond Form)';
+                    formModalSubtitle.innerText = `Al Noor United Equipment Custody (${currentUser.dept})`;
+                } else {
+                    formModalTitle.innerText = 'محضر جرد المخزن (Stock Audit Sheet)';
+                    formModalSubtitle.innerText = `Al Noor United Periodic Physical Inventory (${currentUser.dept})`;
+                }
             }
             
             const formModal = document.getElementById('formModal');
@@ -531,6 +599,7 @@
             
             const activeForm = document.getElementById('activeRequisitionForm');
             if (activeForm) activeForm.reset();
+            formDept.value = currentUser.dept;
             
             const tbody = document.getElementById('formItemsTableBody');
             if (tbody) tbody.innerHTML = '';
@@ -549,11 +618,11 @@
             tr.className = "border-b item-row";
             tr.innerHTML = `
                 <td class="p-2 font-bold row-idx">${tbody.children.length + 1}</td>
-                <td class="p-2"><input type="text" required class="item-name w-full px-2 py-1.5 bg-slate-50 border rounded-lg text-xs" placeholder="Item Name / Description"></td>
-                <td class="p-2"><input type="text" class="item-code w-full px-2 py-1.5 bg-slate-50 border rounded-lg text-xs" placeholder="Item Code"></td>
+                <td class="p-2"><input type="text" required class="item-name w-full px-2 py-1.5 bg-slate-50 border rounded-lg text-xs" placeholder="Item Name / Asset Description"></td>
+                <td class="p-2"><input type="text" class="item-code w-full px-2 py-1.5 bg-slate-50 border rounded-lg text-xs" placeholder="Code / Serial No."></td>
                 <td class="p-2"><input type="text" required class="item-unit w-full px-2 py-1.5 bg-slate-50 border rounded-lg text-xs" placeholder="Unit"></td>
                 <td class="p-2"><input type="number" min="1" value="1" required class="item-qty w-full px-2 py-1.5 bg-slate-50 border rounded-lg text-xs text-center font-bold"></td>
-                <td class="p-2"><input type="text" class="item-notes w-full px-2 py-1.5 bg-slate-50 border rounded-lg text-xs" placeholder="Notes"></td>
+                <td class="p-2"><input type="text" class="item-notes w-full px-2 py-1.5 bg-slate-50 border rounded-lg text-xs" placeholder="Condition / Notes"></td>
                 <td class="p-2"><button type="button" onclick="this.closest('tr').remove(); renumberRows();" class="text-red-400 hover:text-red-700 font-bold p-1">&times;</button></td>
             `;
             tbody.appendChild(tr);
@@ -568,15 +637,14 @@
 
         function submitFormRequisition(e) {
             e.preventDefault();
-            const deptInput = document.getElementById('formDept');
             const purposeInput = document.getElementById('formPurpose');
             const formModalTitle = document.getElementById('formModalTitle');
 
-            if (!deptInput || !purposeInput || !formModalTitle) return;
+            if (!purposeInput || !formModalTitle || !currentUser) return;
 
-            const dept = deptInput.value;
             const purpose = purposeInput.value;
             const formTitle = formModalTitle.innerText.split('(')[0].trim();
+            const routingTarget = (currentUser.email.toLowerCase() === 'req@noor.com.sa') ? 'Accounting' : 'MaintenanceManager';
             
             let items = [];
             document.querySelectorAll('#formItemsTableBody .item-row').forEach(row => {
@@ -594,34 +662,35 @@
                 return;
             }
 
-            const newReq = {
-                id: `REQ-2026-${String(requests.length + 1).padStart(3, '0')}`,
+            const newDoc = {
+                id: `DOC-2026-${String(requests.length + 1).padStart(3, '0')}`,
                 date: new Date().toISOString().split('T')[0],
-                department: dept,
+                department: currentUser.dept,
+                routingTarget: routingTarget,
                 purpose: purpose,
                 formType: formTitle,
                 items: items,
                 status: "In Process",
-                lastStage: "Initiated by Level 1 (Requesting Dept)",
-                approverName: currentUser ? currentUser.email : 'Req@noor.com.sa',
+                lastStage: `Initiated by ${currentUser.dept}`,
+                approverName: currentUser.email,
                 history: [
-                    { stage: "Initiated", by: currentUser ? currentUser.email : 'Req@noor.com.sa', date: new Date().toLocaleString(), note: `Form created & submitted successfully.` }
+                    { stage: "Initiated", by: currentUser.email, date: new Date().toLocaleString(), note: `Form created & routed to ${routingTarget === 'Accounting' ? 'Accounting Department' : 'Maintenance Manager'}.` }
                 ]
             };
 
-            requests.unshift(newReq);
+            requests.unshift(newDoc);
             localStorage.setItem('noor_requests', JSON.stringify(requests));
             closeFormModal();
             renderDashboard();
-            alert(`Document ${newReq.id} successfully created and forwarded to Accounting (Level 2).`);
+            alert(`Document ${newDoc.id} successfully created and routed to ${routingTarget === 'Accounting' ? 'Accounting Department' : 'Maintenance Manager'}.`);
         }
 
         function deleteRequest(id) {
-            if (confirm(`Are you sure you want to delete requisition ${id}? This action cannot be undone.`)) {
+            if (confirm(`Are you sure you want to delete document ${id}? This action cannot be undone.`)) {
                 requests = requests.filter(r => r.id !== id);
                 localStorage.setItem('noor_requests', JSON.stringify(requests));
                 renderDashboard();
-                alert(`Requisition ${id} deleted successfully.`);
+                alert(`Document ${id} deleted successfully.`);
             }
         }
 
@@ -634,11 +703,11 @@
             const modalReqTitle = document.getElementById('modalReqTitle');
             const modalReqMeta = document.getElementById('modalReqMeta');
             if (modalReqTitle) modalReqTitle.innerText = `${req.formType}: ${req.id} (${req.department})`;
-            if (modalReqMeta) modalReqMeta.innerText = `Created on: ${req.date} | Purpose: ${req.purpose}`;
+            if (modalReqMeta) modalReqMeta.innerText = `Created on: ${req.date} | Purpose: ${req.purpose} | Target Reviewer: ${req.routingTarget}`;
 
             let itemsHtml = `
                 <div class="bg-slate-50 p-3 rounded-xl mb-4 border">
-                    <p class="font-bold text-noor-800 mb-2 uppercase text-[11px]">Requested Items Specification:</p>
+                    <p class="font-bold text-noor-800 mb-2 uppercase text-[11px]">Items & Assets Specification:</p>
                     <table class="w-full text-xs bg-white rounded-lg border overflow-hidden">
                         <thead><tr class="bg-slate-100 border-b"><th class="p-2">#</th><th class="p-2">Item Name</th><th class="p-2">Code</th><th class="p-2">Unit</th><th class="p-2">Qty</th><th class="p-2">Notes</th></tr></thead>
                         <tbody>
@@ -650,7 +719,7 @@
 
             let historyHtml = `
                 <div class="mt-4">
-                    <p class="font-bold text-noor-800 mb-2 uppercase text-[11px]">Audit Trail & Stage Approvals:</p>
+                    <p class="font-bold text-noor-800 mb-2 uppercase text-[11px]">Audit Trail & Approvals:</p>
                     <div class="space-y-2">
             `;
             req.history.forEach(h => {
@@ -680,21 +749,31 @@
             let actionHtml = '';
 
             if (req.status !== 'Closed' && req.status !== 'Rejected') {
-                if (currentUser && currentUser.role === 'Accounting' && req.status === 'In Process') {
-                    if (notesContainer) notesContainer.classList.remove('hidden');
-                    actionHtml = `
-                        <button onclick="processApproval('${req.id}', 'Reject', 'Accounting')" class="px-4 py-2 bg-red-600 text-white rounded-xl text-xs font-bold hover:bg-red-700 shadow">Reject Request</button>
-                        <button onclick="processApproval('${req.id}', 'Approve', 'Accounting')" class="px-5 py-2 bg-emerald-600 text-white rounded-xl text-xs font-bold hover:bg-emerald-700 shadow">Approve & Forward to Warehouse (Level 2)</button>
-                    `;
-                } else if (currentUser && currentUser.role === 'Warehouse' && (req.status === 'In Process' || req.status === 'Approved')) {
-                    if (notesContainer) notesContainer.classList.remove('hidden');
-                    actionHtml = `
-                        <button onclick="processApproval('${req.id}', 'Reject', 'Warehouse')" class="px-4 py-2 bg-red-600 text-white rounded-xl text-xs font-bold hover:bg-red-700 shadow">Reject Request</button>
-                        <button onclick="processApproval('${req.id}', 'Close', 'Warehouse')" class="px-5 py-2 bg-noor-800 text-white rounded-xl text-xs font-bold hover:bg-slate-900 shadow">Finalize Dispatch & Close Request (Level 3)</button>
-                    `;
+                if (currentUser && currentUser.role === currentUser.role && req.status === 'In Process') {
+                    // Check permissions for reviewer vs warehouse
+                    let isAssignedReviewer = (currentUser.role === 'Accounting' && req.routingTarget === 'Accounting') || 
+                                             (currentUser.role === 'MaintenanceManager' && req.routingTarget === 'MaintenanceManager');
+                    let isWarehouse = (currentUser.role === 'Warehouse');
+
+                    if (isAssignedReviewer) {
+                        if (notesContainer) notesContainer.classList.remove('hidden');
+                        actionHtml = `
+                            <button onclick="processApproval('${req.id}', 'Reject', '${currentUser.dept}')" class="px-4 py-2 bg-red-600 text-white rounded-xl text-xs font-bold hover:bg-red-700 shadow">Reject Document</button>
+                            <button onclick="processApproval('${req.id}', 'ApproveReviewer', '${currentUser.dept}')" class="px-5 py-2 bg-emerald-600 text-white rounded-xl text-xs font-bold hover:bg-emerald-700 shadow">Approve & Forward to Warehouse (Level 2)</button>
+                        `;
+                    } else if (isWarehouse && req.lastStage.includes('Approved')) {
+                        if (notesContainer) notesContainer.classList.remove('hidden');
+                        actionHtml = `
+                            <button onclick="processApproval('${req.id}', 'Reject', 'Warehouse')" class="px-4 py-2 bg-red-600 text-white rounded-xl text-xs font-bold hover:bg-red-700 shadow">Reject Document</button>
+                            <button onclick="processApproval('${req.id}', 'Close', 'Warehouse')" class="px-5 py-2 bg-noor-800 text-white rounded-xl text-xs font-bold hover:bg-slate-900 shadow">Finalize Dispatch & Close Document (Level 3)</button>
+                        `;
+                    } else {
+                        if (notesContainer) notesContainer.classList.add('hidden');
+                        actionHtml = `<span class="text-xs text-slate-400 italic">Awaiting action from assigned reviewer (${req.routingTarget})...</span>`;
+                    }
                 } else {
                     if (notesContainer) notesContainer.classList.add('hidden');
-                    actionHtml = `<span class="text-xs text-slate-400 italic">Awaiting action from respective department level...</span>`;
+                    actionHtml = `<span class="text-xs text-slate-400 italic">Awaiting respective department action...</span>`;
                 }
             } else {
                 if (notesContainer) notesContainer.classList.add('hidden');
@@ -720,21 +799,21 @@
             const optionalNote = optionalNoteEl ? optionalNoteEl.value.trim() : '';
             const noteText = optionalNote ? `Note: ${optionalNote}` : `Action processed at ${deptRole} stage.`;
 
-            if (action === 'Approve') {
+            if (action === 'ApproveReviewer') {
                 req.status = 'Approved';
-                req.lastStage = 'Approved by Accounting (Level 2)';
-                req.approverName = currentUser ? currentUser.email : 'Account@noor.com.sa';
-                req.history.push({ stage: "Accounting Approval", by: req.approverName, date: timestamp, note: noteText });
+                req.lastStage = `Approved by ${deptRole} (Level 2)`;
+                req.approverName = currentUser.email;
+                req.history.push({ stage: `${deptRole} Approval`, by: currentUser.email, date: timestamp, note: noteText });
             } else if (action === 'Close') {
                 req.status = 'Closed';
                 req.lastStage = 'Closed & Dispatched by Warehouse (Level 3)';
-                req.approverName = currentUser ? currentUser.email : 'Wh@noor.com.sa';
-                req.history.push({ stage: "Warehouse Dispatch / Closed", by: req.approverName, date: timestamp, note: noteText });
+                req.approverName = currentUser.email;
+                req.history.push({ stage: "Warehouse Dispatch / Closed", by: currentUser.email, date: timestamp, note: noteText });
             } else if (action === 'Rejected' || action === 'Reject') {
                 req.status = 'Rejected';
                 req.lastStage = `Rejected by ${deptRole}`;
-                req.approverName = currentUser ? currentUser.email : deptRole;
-                req.history.push({ stage: "Rejected", by: req.approverName, date: timestamp, note: noteText });
+                req.approverName = currentUser.email;
+                req.history.push({ stage: "Rejected", by: currentUser.email, date: timestamp, note: noteText });
             }
 
             localStorage.setItem('noor_requests', JSON.stringify(requests));
@@ -744,6 +823,10 @@
         }
 
         function openPasswordModal() {
+            if (!currentUser || !currentUser.canChangePass) {
+                alert("You do not have permission to change your password.");
+                return;
+            }
             const passwordModal = document.getElementById('passwordModal');
             if (passwordModal) passwordModal.classList.remove('hidden');
             const currentPass = document.getElementById('currentPassInput');
@@ -772,13 +855,13 @@
                 closePasswordModal();
                 alert("Password successfully updated!");
             } else {
-                alert("Incorrect current/last remembered password verification failed.");
+                alert("Incorrect current password verification failed.");
             }
         }
 
         function exportTableToCSV() {
             let csv = [];
-            let headers = ["Request ID", "Date", "Department", "Form Type", "Purpose", "Items Count", "Status", "Last Approval Stage", "Approver"];
+            let headers = ["Document ID", "Date", "Department", "Form Type", "Purpose", "Items Count", "Status", "Last Approval Stage", "Approver"];
             csv.push(headers.join(","));
 
             requests.forEach(r => {
@@ -800,7 +883,7 @@
             let url = URL.createObjectURL(csvBlob);
             let a = document.createElement('a');
             a.setAttribute('href', url);
-            a.setAttribute('download', `AlNoor_Warehouse_Records_${new Date().toISOString().split('T')[0]}.csv`);
+            a.setAttribute('download', `AlNoor_Warehouse_Forms_${new Date().toISOString().split('T')[0]}.csv`);
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
