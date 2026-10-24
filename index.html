@@ -119,22 +119,30 @@
         <!-- DASHBOARD VIEW (Stretches to 100% Maximum Display Width) -->
         <div id="dashboardView" class="hidden w-full space-y-6">
             
+            <!-- Tabs Navigation for Panels -->
+            <div class="bg-white p-2 rounded-2xl shadow-sm border border-slate-200 flex flex-wrap gap-2">
+                <button onclick="switchTab('tasks')" id="tabBtn-tasks" class="flex-1 py-3 px-4 rounded-xl text-xs font-bold transition flex items-center justify-center space-x-2 bg-noor-500 text-white shadow-md">
+                    <i class="fa-solid fa-list-check"></i>
+                    <span>Task For You (<span id="taskCountBadge">0</span>)</span>
+                </button>
+                <button onclick="switchTab('pending')" id="tabBtn-pending" class="flex-1 py-3 px-4 rounded-xl text-xs font-bold transition flex items-center justify-center space-x-2 bg-slate-100 text-slate-700 hover:bg-slate-200">
+                    <i class="fa-solid fa-clock-rotate-left"></i>
+                    <span>Pending Requests (<span id="pendingCountBadge">0</span>)</span>
+                </button>
+                <button onclick="switchTab('closed')" id="tabBtn-closed" class="flex-1 py-3 px-4 rounded-xl text-xs font-bold transition flex items-center justify-center space-x-2 bg-slate-100 text-slate-700 hover:bg-slate-200">
+                    <i class="fa-solid fa-circle-check"></i>
+                    <span>Closed Requests (<span id="closedCountBadge">0</span>)</span>
+                </button>
+                <button onclick="switchTab('all')" id="tabBtn-all" class="flex-1 py-3 px-4 rounded-xl text-xs font-bold transition flex items-center justify-center space-x-2 bg-slate-100 text-slate-700 hover:bg-slate-200">
+                    <i class="fa-solid fa-folder-open"></i>
+                    <span>All Requests (<span id="allCountBadge">0</span>)</span>
+                </button>
+            </div>
+
             <!-- Action Bar -->
             <div class="bg-white p-4 sm:p-5 rounded-3xl shadow-sm border border-slate-200/80 flex flex-col lg:flex-row justify-between items-center gap-4 w-full">
                 
                 <div class="flex flex-wrap items-center gap-4 w-full lg:w-auto">
-                    <div class="flex items-center space-x-2.5 w-full sm:w-auto">
-                        <span class="text-xs font-bold text-slate-600 whitespace-nowrap">Filter Status:</span>
-                        <select id="statusFilter" onchange="renderDashboard()" class="w-full sm:w-auto px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-2xl text-xs font-medium focus:outline-none focus:ring-2 focus:ring-noor-500">
-                            <option value="ALL">All Documents</option>
-                            <option value="Initiated">Initiated (Level 1)</option>
-                            <option value="In Process">In Process (Warehouse / Review)</option>
-                            <option value="Approved">Approved (Ready for Dispatch)</option>
-                            <option value="Closed">Closed (Completed)</option>
-                            <option value="Rejected">Rejected</option>
-                        </select>
-                    </div>
-
                     <!-- Bulk Action Button -->
                     <button id="bulkApproveBtn" onclick="bulkApproveSelected()" class="hidden bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-4 py-2.5 rounded-2xl text-xs transition shadow-sm items-center space-x-1.5">
                         <i class="fa-solid fa-check-double"></i>
@@ -158,9 +166,10 @@
                         </div>
                     </div>
 
-                    <button onclick="exportTableToCSV()" class="w-full sm:w-auto bg-slate-800 hover:bg-slate-900 text-white font-medium px-4.5 py-2.5 rounded-2xl text-xs transition flex items-center justify-center space-x-2 shadow-sm">
+                    <!-- Admin Only CSV Download -->
+                    <button id="adminDownloadCsvBtn" onclick="exportTableToCSV()" class="hidden w-full sm:w-auto bg-slate-800 hover:bg-slate-900 text-white font-medium px-4.5 py-2.5 rounded-2xl text-xs transition items-center justify-center space-x-2 shadow-sm">
                         <i class="fa-solid fa-download"></i>
-                        <span>Download CSV</span>
+                        <span>Download Full Cost Centre & Items CSV</span>
                     </button>
                 </div>
             </div>
@@ -168,22 +177,23 @@
             <!-- Master Requests Table (Full Width Resolution) -->
             <div class="bg-white rounded-3xl shadow-sm border border-slate-200/80 overflow-hidden w-full">
                 <div class="p-4 sm:p-5 border-b border-slate-200/80 bg-slate-50/50 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
-                    <h3 class="font-bold text-noor-800 text-xs sm:text-sm flex items-center space-x-2">
+                    <h3 id="panelTitleHeader" class="font-bold text-noor-800 text-xs sm:text-sm flex items-center space-x-2">
                         <i class="fa-solid fa-table-list text-noor-500"></i>
-                        <span>Regional Warehouse & Multi-Tier Audit Logs</span>
+                        <span>Task For You Queue</span>
                     </h3>
                     <span id="recordCount" class="text-xs font-bold bg-orange-100 text-noor-700 px-3.5 py-1 rounded-full">0 Records</span>
                 </div>
                 <div class="overflow-x-auto w-full">
-                    <table class="w-full text-left border-collapse min-w-[900px]">
+                    <table class="w-full text-left border-collapse min-w-[950px]">
                         <thead>
                             <tr class="bg-noor-800 text-white text-[11px] uppercase tracking-wider">
                                 <th class="p-3 text-center w-10"><input type="checkbox" id="selectAllCheckbox" onchange="toggleSelectAll(this)" class="rounded cursor-pointer"></th>
                                 <th class="p-3.5 sm:p-4">Doc ID</th>
                                 <th class="p-3.5 sm:p-4">Date</th>
                                 <th class="p-3.5 sm:p-4">Department & Issue To</th>
+                                <th class="p-3.5 sm:p-4">Cost Centre</th>
                                 <th class="p-3.5 sm:p-4">Selected Warehouse</th>
-                                <th class="p-3.5 sm:p-4">Form Type & Purpose</th>
+                                <th class="p-3.5 sm:p-4">Form Type & Description</th>
                                 <th class="p-3.5 sm:p-4">Status</th>
                                 <th class="p-3.5 sm:p-4">Last Approval Stage</th>
                                 <th class="p-3.5 sm:p-4 text-center">Actions</th>
@@ -217,7 +227,7 @@
             </div>
 
             <form id="activeRequisitionForm" onsubmit="submitFormRequisition(event)" class="space-y-5 sm:space-y-6">
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 bg-slate-50 p-4 sm:p-5 rounded-2xl border border-slate-200/80">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4 bg-slate-50 p-4 sm:p-5 rounded-2xl border border-slate-200/80">
                     <div>
                         <label class="block text-xs font-bold text-slate-700 mb-1.5">الجهة الطالبة (Department) <span class="text-red-500">*</span></label>
                         <input type="text" id="formDept" readonly 
@@ -237,10 +247,15 @@
                         <input type="text" id="formIssueTo" required placeholder="e.g. Najran Fuel Station" 
                             class="w-full px-4 py-2.5 bg-white border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-noor-500 focus:outline-none">
                     </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1.5">مركز التكلفة (Cost Centre)</label>
+                        <input type="text" id="formCostCentre" placeholder="e.g. CC-LOG-402" 
+                            class="w-full px-4 py-2.5 bg-white border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-noor-500 focus:outline-none">
+                    </div>
                 </div>
 
                 <div class="bg-slate-50 px-4 sm:px-5 py-3 rounded-2xl border border-slate-200/80">
-                    <label class="block text-xs font-bold text-slate-700 mb-1">الطلب لأجل / البيان (Purpose / Remarks - Auto Generated as Qty x Item) <span class="text-red-500">*</span></label>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">الطلب لأجل / البيان (Description - Auto Generated as Qty x Item) <span class="text-red-500">*</span></label>
                     <input type="text" id="formPurpose" required placeholder="1x Item Name, 2x Item Name..." 
                         class="w-full px-4 py-2.5 bg-white border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-noor-500 focus:outline-none">
                 </div>
@@ -365,6 +380,7 @@
         let currentUser = JSON.parse(localStorage.getItem('noor_current_user')) || null;
         let customLogoData = localStorage.getItem('noor_custom_logo') || null;
         let requests = JSON.parse(localStorage.getItem('noor_requests')) || [];
+        let currentActiveTab = 'tasks'; // 'tasks', 'pending', 'closed', 'all'
 
         window.onload = function() {
             applyCustomLogo();
@@ -450,6 +466,7 @@
             const warehouseMenuBtnText = document.getElementById('warehouseMenuBtnText');
             const warehouseMenuOptions = document.getElementById('warehouseMenuOptions');
             const adminLogoUploadContainer = document.getElementById('adminLogoUploadContainer');
+            const adminDownloadCsvBtn = document.getElementById('adminDownloadCsvBtn');
 
             if (loginView) loginView.classList.add('hidden');
             if (dashboardView) dashboardView.classList.remove('hidden');
@@ -465,6 +482,16 @@
                 } else {
                     adminLogoUploadContainer.classList.remove('inline-flex');
                     adminLogoUploadContainer.classList.add('hidden');
+                }
+            }
+
+            if (adminDownloadCsvBtn) {
+                if (currentUser.role === 'AdminDeleteAll') {
+                    adminDownloadCsvBtn.classList.remove('hidden');
+                    adminDownloadCsvBtn.classList.add('inline-flex');
+                } else {
+                    adminDownloadCsvBtn.classList.remove('inline-flex');
+                    adminDownloadCsvBtn.classList.add('hidden');
                 }
             }
 
@@ -524,7 +551,7 @@
                 }
             }
 
-            renderDashboard();
+            switchTab('tasks');
         }
 
         function toggleWarehouseMenu() {
@@ -536,35 +563,84 @@
             if (menu) menu.classList.toggle('hidden');
         }
 
+        function switchTab(tabName) {
+            currentActiveTab = tabName;
+            ['tasks', 'pending', 'closed', 'all'].forEach(t => {
+                const btn = document.getElementById(`tabBtn-${t}`);
+                if (!btn) return;
+                if (t === tabName) {
+                    btn.className = "flex-1 py-3 px-4 rounded-xl text-xs font-bold transition flex items-center justify-center space-x-2 bg-noor-500 text-white shadow-md";
+                } else {
+                    btn.className = "flex-1 py-3 px-4 rounded-xl text-xs font-bold transition flex items-center justify-center space-x-2 bg-slate-100 text-slate-700 hover:bg-slate-200";
+                }
+            });
+
+            const panelTitle = document.getElementById('panelTitleHeader');
+            if (panelTitle) {
+                if (tabName === 'tasks') panelTitle.innerHTML = `<i class="fa-solid fa-list-check text-noor-500"></i><span>Task For You Queue (Requires Your Action)</span>`;
+                if (tabName === 'pending') panelTitle.innerHTML = `<i class="fa-solid fa-clock-rotate-left text-noor-500"></i><span>Pending Requests Panel</span>`;
+                if (tabName === 'closed') panelTitle.innerHTML = `<i class="fa-solid fa-circle-check text-noor-500"></i><span>Closed Requests Panel</span>`;
+                if (tabName === 'all') panelTitle.innerHTML = `<i class="fa-solid fa-folder-open text-noor-500"></i><span>All System Requests</span>`;
+            }
+
+            renderDashboard();
+        }
+
         let selectedRequestIds = new Set();
 
+        function isUserResponsibleForTask(req) {
+            if (!currentUser || req.status === 'Closed' || req.status === 'Rejected') return false;
+            let isAdmin = (currentUser.role === 'AdminDeleteAll');
+            let isRegionalWarehouse = (currentUser.role === 'Warehouse' && req.warehouse === currentUser.warehouseName);
+            let isAssignedReviewer = (currentUser.role === 'Accounting' && req.routingTarget === 'Accounting') || 
+                                     (currentUser.role === 'MaintenanceManager' && req.routingTarget === 'MaintenanceManager');
+
+            if (isAdmin) return true;
+
+            let isWHAvailStage = isRegionalWarehouse && req.lastStage.includes('Initiated');
+            let isManagerStage = isAssignedReviewer && req.lastStage.includes('Availability Checked');
+            let isWHFinalStage = isRegionalWarehouse && req.lastStage.includes('Approved by');
+
+            return isWHAvailStage || isManagerStage || isWHFinalStage;
+        }
+
         function renderDashboard() {
-            const statusFilter = document.getElementById('statusFilter');
-            const filter = statusFilter ? statusFilter.value : 'ALL';
             const tbody = document.getElementById('requestsTableBody');
             if (!tbody) return;
             tbody.innerHTML = '';
             selectedRequestIds.clear();
             updateBulkApproveButton();
 
-            let filtered = requests;
-            if (filter !== 'ALL') {
-                filtered = requests.filter(r => r.status === filter);
-            }
+            // Calculate badge counts
+            let taskList = requests.filter(r => isUserResponsibleForTask(r));
+            let pendingList = requests.filter(r => r.status !== 'Closed' && r.status !== 'Rejected');
+            let closedList = requests.filter(r => r.status === 'Closed' || r.status === 'Rejected');
 
-            if (currentUser && currentUser.role === 'Warehouse') {
-                filtered = filtered.filter(r => r.warehouse === currentUser.warehouseName);
-            }
+            const taskCountBadge = document.getElementById('taskCountBadge');
+            const pendingCountBadge = document.getElementById('pendingCountBadge');
+            const closedCountBadge = document.getElementById('closedCountBadge');
+            const allCountBadge = document.getElementById('allCountBadge');
+
+            if (taskCountBadge) taskCountBadge.innerText = taskList.length;
+            if (pendingCountBadge) pendingCountBadge.innerText = pendingList.length;
+            if (closedCountBadge) closedCountBadge.innerText = closedList.length;
+            if (allCountBadge) allCountBadge.innerText = requests.length;
+
+            let displayedList = requests;
+            if (currentActiveTab === 'tasks') displayedList = taskList;
+            if (currentActiveTab === 'pending') displayedList = pendingList;
+            if (currentActiveTab === 'closed') displayedList = closedList;
+            if (currentActiveTab === 'all') displayedList = requests;
 
             const recordCount = document.getElementById('recordCount');
-            if (recordCount) recordCount.innerText = `${filtered.length} Records`;
+            if (recordCount) recordCount.innerText = `${displayedList.length} Records`;
 
-            if (filtered.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="9" class="text-center py-8 text-slate-400 italic">No document records found.</td></tr>`;
+            if (displayedList.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="10" class="text-center py-8 text-slate-400 italic">No document records found in this view.</td></tr>`;
                 return;
             }
 
-            filtered.forEach(req => {
+            displayedList.forEach(req => {
                 let badgeColor = "bg-yellow-100 text-yellow-800";
                 if (req.status === 'In Process') badgeColor = "bg-blue-100 text-blue-800";
                 if (req.status === 'Approved') badgeColor = "bg-purple-100 text-purple-800";
@@ -572,19 +648,9 @@
                 if (req.status === 'Rejected') badgeColor = "bg-red-100 text-red-800";
 
                 let canDelete = (currentUser && currentUser.role === 'AdminDeleteAll') || 
-                                (currentUser && currentUser.role === 'Requesting' && req.approverName.toLowerCase() === currentUser.email.toLowerCase() && (req.status === 'Initiated' || req.status === 'In Process') && req.lastStage && req.lastStage.includes('Initiated'));
+                                (currentUser && currentUser.role === 'Requesting' && req.approverName && req.approverName.toLowerCase() === currentUser.email.toLowerCase() && (req.status === 'Initiated' || req.status === 'In Process') && req.lastStage && req.lastStage.includes('Initiated'));
 
-                let canAction = false;
-                if (req.status !== 'Closed' && req.status !== 'Rejected') {
-                    let isAdmin = (currentUser && currentUser.role === 'AdminDeleteAll');
-                    let isRegionalWarehouse = (currentUser && currentUser.role === 'Warehouse' && req.warehouse === currentUser.warehouseName);
-                    let isAssignedReviewer = (currentUser && currentUser.role === 'Accounting' && req.routingTarget === 'Accounting') || 
-                                             (currentUser && currentUser.role === 'MaintenanceManager' && req.routingTarget === 'MaintenanceManager');
-
-                    if ((isRegionalWarehouse || isAssignedReviewer || isAdmin) && req.status !== 'Closed') {
-                        canAction = true;
-                    }
-                }
+                let canAction = isUserResponsibleForTask(req);
 
                 let tr = document.createElement('tr');
                 tr.className = "hover:bg-slate-50/80 transition";
@@ -598,6 +664,7 @@
                         ${req.department}<br>
                         <span class="text-[10px] text-slate-400">Issue To: ${req.issueTo}</span>
                     </td>
+                    <td class="p-3.5 sm:p-4 font-semibold text-slate-700">${req.costCentre || '-'}</td>
                     <td class="p-3.5 sm:p-4 font-semibold text-noor-700">${req.warehouse}</td>
                     <td class="p-3.5 sm:p-4 text-slate-600 truncate max-w-xs">${req.purpose} <br><span class="text-[10px] text-orange-600 font-semibold">[${req.formType}]</span></td>
                     <td class="p-3.5 sm:p-4"><span class="px-3 py-1 rounded-full text-[11px] font-bold ${badgeColor}">${req.status}</span></td>
@@ -802,12 +869,14 @@
             const formModalTitle = document.getElementById('formModalTitle');
             const warehouseSelect = document.getElementById('formWarehouse');
             const issueToInput = document.getElementById('formIssueTo');
+            const costCentreInput = document.getElementById('formCostCentre');
 
             if (!purposeInput || !formModalTitle || !currentUser || !warehouseSelect || !issueToInput) return;
 
             const purpose = purposeInput.value;
             const warehouse = warehouseSelect.value;
             const issueTo = issueToInput.value;
+            const costCentre = costCentreInput ? costCentreInput.value.trim() : '';
             const formTitle = formModalTitle.innerText.split('(')[0].trim();
             const routingTarget = (currentUser.email.toLowerCase() === 'req@noor.com.sa') ? 'Accounting' : 'MaintenanceManager';
             
@@ -833,6 +902,7 @@
                 department: currentUser.dept,
                 warehouse: warehouse,
                 issueTo: issueTo,
+                costCentre: costCentre,
                 routingTarget: routingTarget,
                 purpose: purpose,
                 formType: formTitle,
@@ -870,7 +940,7 @@
             const modalReqTitle = document.getElementById('modalReqTitle');
             const modalReqMeta = document.getElementById('modalReqMeta');
             if (modalReqTitle) modalReqTitle.innerText = `${req.formType}: ${req.id} (${req.department})`;
-            if (modalReqMeta) modalReqMeta.innerText = `Created on: ${req.date} | Warehouse: ${req.warehouse} | Issue To: ${req.issueTo} | Purpose: ${req.purpose}`;
+            if (modalReqMeta) modalReqMeta.innerText = `Created on: ${req.date} | Cost Centre: ${req.costCentre || '-'} | Warehouse: ${req.warehouse} | Issue To: ${req.issueTo} | Description: ${req.purpose}`;
 
             let itemsHtml = `
                 <div class="bg-slate-50 p-4 rounded-2xl mb-4 border border-slate-200">
@@ -1047,32 +1117,51 @@
         }
 
         function exportTableToCSV() {
+            if (!currentUser || currentUser.role !== 'AdminDeleteAll') {
+                alert("Access restricted to System Administrator.");
+                return;
+            }
+
             let csv = [];
-            let headers = ["Document ID", "Date", "Department", "Issue To", "Warehouse", "Form Type", "Purpose", "Items Count", "Status", "Last Approval Stage", "Approver"];
+            let headers = [
+                "Request Number", "Date", "Department", "Cost Centre", "Issue To (From/To)", 
+                "Warehouse", "Form Type", "Item Code", "Product Name", "Quantity", 
+                "Unit", "Item Notes", "Status", "Last Approval Stage", "Closed / Pending Date", 
+                "Request By (Initiator)", "Comments / Audit Trail"
+            ];
             csv.push(headers.join(","));
 
             requests.forEach(r => {
-                let row = [
-                    r.id,
-                    r.date,
-                    `"${r.department}"`,
-                    `"${r.issueTo}"`,
-                    `"${r.warehouse}"`,
-                    `"${r.formType}"`,
-                    `"${r.purpose}"`,
-                    r.items.length,
-                    r.status,
-                    `"${r.lastStage}"`,
-                    `"${r.approverName || 'N/A'}"`
-                ];
-                csv.push(row.join(","));
+                r.items.forEach(item => {
+                    let lastHist = r.history[r.history.length - 1];
+                    let row = [
+                        r.id,
+                        r.date,
+                        `"${r.department}"`,
+                        `"${r.costCentre || '-'}"`,
+                        `"${r.issueTo}"`,
+                        `"${r.warehouse}"`,
+                        `"${r.formType}"`,
+                        `"${item.code || '-'}"`,
+                        `"${item.name}"`,
+                        item.qty,
+                        `"${item.unit}"`,
+                        `"${item.notes || '-'}"`,
+                        r.status,
+                        `"${r.lastStage}"`,
+                        `"${lastHist ? lastHist.date : r.date}"`,
+                        `"${r.approverName || 'N/A'}"`,
+                        `"${r.purpose}"`
+                    ];
+                    csv.push(row.join(","));
+                });
             });
 
             let csvBlob = new Blob([csv.join("\n")], { type: 'text/csv;charset=utf-8;' });
             let url = URL.createObjectURL(csvBlob);
             let a = document.createElement('a');
             a.setAttribute('href', url);
-            a.setAttribute('download', `AlNoor_Warehouse_Forms_${new Date().toISOString().split('T')[0]}.csv`);
+            a.setAttribute('download', `AlNoor_Full_CostCentre_Audit_${new Date().toISOString().split('T')[0]}.csv`);
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
