@@ -275,7 +275,7 @@
                                     <th class="p-3 w-12">م</th>
                                     <th class="p-3 text-left" style="width: 35%;">إسم الصنف / الأداة (Item Name) <span class="text-red-400">*</span></th>
                                     <th class="p-3" style="width: 15%;">كود صنف (Code)</th>
-                                    <th class="p-3" style="width: 12%;">الوحدة (Unit) <span class="text-red-400">*</span></th>
+                                    <th class="p-3" style="width: 12%;">الوحدة (Unit)</th>
                                     <th class="p-3" style="width: 12%;">الكمية (Qty) <span class="text-red-400">*</span></th>
                                     <th class="p-3 text-left" style="width: 21%;">ملاحظات / الحالة (Notes)</th>
                                     <th class="p-3 w-10"></th>
@@ -591,7 +591,12 @@
         function isUserResponsibleForTask(req) {
             if (!currentUser || req.status === 'Closed' || req.status === 'Rejected') return false;
             let isAdmin = (currentUser.role === 'AdminDeleteAll');
-            let isRegionalWarehouse = (currentUser.role === 'Warehouse' && req.warehouse === currentUser.warehouseName);
+            
+            // Allow Main WH and Southern WH users to mutually cross-approve requests destined for either Main Warehouse or Southern Region Warehouse
+            let isMainOrSouthWHUser = (currentUser.role === 'Warehouse' && (currentUser.warehouseName === 'Main Warehouse' || currentUser.warehouseName === 'Southern Region Warehouse'));
+            let isTargetMainOrSouth = (req.warehouse === 'Main Warehouse' || req.warehouse === 'Southern Region Warehouse');
+            let isRegionalWarehouse = (currentUser.role === 'Warehouse' && (req.warehouse === currentUser.warehouseName || (isMainOrSouthWHUser && isTargetMainOrSouth)));
+
             let isAssignedReviewer = (currentUser.role === 'Accounting' && req.routingTarget === 'Accounting') || 
                                      (currentUser.role === 'MaintenanceManager' && req.routingTarget === 'MaintenanceManager');
 
@@ -611,7 +616,6 @@
             selectedRequestIds.clear();
             updateBulkApproveButton();
 
-            // Calculate badge counts
             let taskList = requests.filter(r => isUserResponsibleForTask(r));
             let pendingList = requests.filter(r => r.status !== 'Closed' && r.status !== 'Rejected');
             let closedList = requests.filter(r => r.status === 'Closed' || r.status === 'Rejected');
@@ -730,7 +734,10 @@
 
                 const timestamp = new Date().toLocaleString();
                 let isAdmin = (currentUser && currentUser.role === 'AdminDeleteAll');
-                let isRegionalWarehouse = (currentUser && currentUser.role === 'Warehouse' && req.warehouse === currentUser.warehouseName);
+                let isMainOrSouthWHUser = (currentUser && currentUser.role === 'Warehouse' && (currentUser.warehouseName === 'Main Warehouse' || currentUser.warehouseName === 'Southern Region Warehouse'));
+                let isTargetMainOrSouth = (req.warehouse === 'Main Warehouse' || req.warehouse === 'Southern Region Warehouse');
+                let isRegionalWarehouse = (currentUser && currentUser.role === 'Warehouse' && (req.warehouse === currentUser.warehouseName || (isMainOrSouthWHUser && isTargetMainOrSouth)));
+
                 let isAssignedReviewer = (currentUser && currentUser.role === 'Accounting' && req.routingTarget === 'Accounting') || 
                                          (currentUser && currentUser.role === 'MaintenanceManager' && req.routingTarget === 'MaintenanceManager');
 
@@ -827,7 +834,7 @@
                 <td class="p-2.5 font-bold row-idx">${tbody.children.length + 1}</td>
                 <td class="p-2.5"><input type="text" required oninput="updateAutoDescription()" class="item-name w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-noor-500 focus:bg-white focus:outline-none" placeholder="Item Name"></td>
                 <td class="p-2.5"><input type="text" class="item-code w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-noor-500 focus:bg-white focus:outline-none" placeholder="Code"></td>
-                <td class="p-2.5"><input type="text" required class="item-unit w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-noor-500 focus:bg-white focus:outline-none" placeholder="Unit"></td>
+                <td class="p-2.5"><input type="text" value="Pieces" class="item-unit w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-noor-500 focus:bg-white focus:outline-none" placeholder="Pieces"></td>
                 <td class="p-2.5"><input type="number" min="1" value="1" required oninput="updateAutoDescription()" class="item-qty w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs text-center font-bold focus:ring-2 focus:ring-noor-500 focus:bg-white focus:outline-none"></td>
                 <td class="p-2.5"><input type="text" class="item-notes w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-noor-500 focus:bg-white focus:outline-none" placeholder="Notes"></td>
                 <td class="p-2.5"><button type="button" onclick="this.closest('tr').remove(); renumberRows(); updateAutoDescription();" class="text-red-400 hover:text-red-700 font-bold p-1.5 rounded-lg hover:bg-red-50 transition"><i class="fa-solid fa-xmark"></i></button></td>
@@ -882,10 +889,12 @@
             
             let items = [];
             document.querySelectorAll('#formItemsTableBody .item-row').forEach(row => {
+                let unitVal = row.querySelector('.item-unit').value.trim();
+                if (!unitVal) unitVal = 'Pieces';
                 items.push({
                     name: row.querySelector('.item-name').value,
                     code: row.querySelector('.item-code').value || '-',
-                    unit: row.querySelector('.item-unit').value,
+                    unit: unitVal,
                     qty: row.querySelector('.item-qty').value,
                     notes: row.querySelector('.item-notes').value || '-'
                 });
@@ -987,7 +996,10 @@
 
             if (req.status !== 'Closed' && req.status !== 'Rejected') {
                 let isAdmin = (currentUser && currentUser.role === 'AdminDeleteAll');
-                let isRegionalWarehouse = (currentUser && currentUser.role === 'Warehouse' && req.warehouse === currentUser.warehouseName);
+                let isMainOrSouthWHUser = (currentUser && currentUser.role === 'Warehouse' && (currentUser.warehouseName === 'Main Warehouse' || currentUser.warehouseName === 'Southern Region Warehouse'));
+                let isTargetMainOrSouth = (req.warehouse === 'Main Warehouse' || req.warehouse === 'Southern Region Warehouse');
+                let isRegionalWarehouse = (currentUser && currentUser.role === 'Warehouse' && (req.warehouse === currentUser.warehouseName || (isMainOrSouthWHUser && isTargetMainOrSouth)));
+
                 let isAssignedReviewer = (currentUser && currentUser.role === 'Accounting' && req.routingTarget === 'Accounting') || 
                                          (currentUser && currentUser.role === 'MaintenanceManager' && req.routingTarget === 'MaintenanceManager');
 
