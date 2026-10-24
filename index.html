@@ -34,11 +34,11 @@
         }
     </script>
 </head>
-<body class="bg-slate-50 text-slate-800 font-sans min-h-screen flex flex-col justify-between antialiased">
+<body class="bg-slate-50 text-slate-800 font-sans min-h-screen flex flex-col justify-between antialiased overflow-x-hidden">
 
     <!-- Top Header -->
-    <header class="bg-noor-800 text-white shadow-md border-b-4 border-noor-500">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3.5 flex flex-col sm:flex-row justify-between items-center gap-4">
+    <header class="bg-noor-800 text-white shadow-md border-b-4 border-noor-500 w-full">
+        <div class="w-full px-4 sm:px-8 py-3.5 flex flex-col sm:flex-row justify-between items-center gap-4">
             <div class="flex items-center space-x-3 sm:space-x-4">
                 <div id="headerLogoContainer" class="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-tr from-noor-500 to-amber-400 rounded-full flex items-center justify-center text-white shadow-lg relative overflow-hidden ring-2 ring-white/20 flex-shrink-0">
                     <i id="headerLogoIcon" class="fa-solid fa-sun text-xl sm:text-2xl animate-spin" style="animation-duration: 20s;"></i>
@@ -56,6 +56,13 @@
 
             <!-- User Session Box -->
             <div id="userSessionHeader" class="hidden flex items-center space-x-3 sm:space-x-4">
+                <!-- Admin Logo Upload Button (Only visible to Admin) -->
+                <label id="adminLogoUploadContainer" class="hidden cursor-pointer bg-white/10 hover:bg-white/20 text-white text-xs px-3 py-2 rounded-xl border border-white/20 transition items-center space-x-1.5">
+                    <i class="fa-solid fa-upload"></i>
+                    <span class="hidden sm:inline">Change Logo</span>
+                    <input type="file" id="logoUploadInput" accept="image/*" onchange="handleLogoUpload(event)" class="hidden">
+                </label>
+
                 <div class="text-right">
                     <span id="displayUserRole" class="block text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-orange-300 bg-black/30 px-2.5 sm:px-3 py-1 rounded-full"></span>
                     <span id="displayUserId" class="text-[11px] sm:text-xs font-semibold text-slate-200 mt-0.5 block"></span>
@@ -72,11 +79,11 @@
         </div>
     </header>
 
-    <!-- Main Content Body -->
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-10 flex-grow w-full">
+    <!-- Main Content Body (Max Screen Resolution Stretch) -->
+    <main class="w-full px-3 sm:px-6 py-6 sm:py-8 flex-grow">
 
         <!-- LOGIN VIEW -->
-        <div id="loginView" class="max-w-md mx-auto bg-white rounded-3xl shadow-2xl border border-slate-200/80 p-6 sm:p-10 mt-6">
+        <div id="loginView" class="max-w-md mx-auto bg-white rounded-3xl shadow-2xl border border-slate-200/80 p-6 sm:p-10 mt-12">
             <div class="text-center mb-6 sm:mb-8">
                 <div class="w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-tr from-noor-500 to-amber-400 text-white rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg text-xl sm:text-2xl ring-4 ring-orange-100">
                     <i class="fa-solid fa-sun animate-spin" style="animation-duration: 25s;"></i>
@@ -107,21 +114,13 @@
                     <i class="fa-solid fa-arrow-right-to-bracket"></i>
                 </button>
             </form>
-
-            <div class="mt-6 sm:mt-8 pt-6 border-t border-slate-100 text-center">
-                <label class="cursor-pointer text-xs text-noor-600 hover:text-noor-700 font-bold inline-flex items-center space-x-1.5 bg-orange-50 px-4 py-2.5 rounded-xl transition">
-                    <i class="fa-solid fa-upload"></i>
-                    <span>Upload Custom Company Logo</span>
-                    <input type="file" id="logoUploadInput" accept="image/*" onchange="handleLogoUpload(event)" class="hidden">
-                </label>
-            </div>
         </div>
 
-        <!-- DASHBOARD VIEW -->
-        <div id="dashboardView" class="hidden space-y-6">
+        <!-- DASHBOARD VIEW (Stretches to 100% Maximum Display Width) -->
+        <div id="dashboardView" class="hidden w-full space-y-6">
             
             <!-- Action Bar -->
-            <div class="bg-white p-4 sm:p-5 rounded-3xl shadow-sm border border-slate-200/80 flex flex-col lg:flex-row justify-between items-center gap-4">
+            <div class="bg-white p-4 sm:p-5 rounded-3xl shadow-sm border border-slate-200/80 flex flex-col lg:flex-row justify-between items-center gap-4 w-full">
                 
                 <div class="flex flex-wrap items-center gap-4 w-full lg:w-auto">
                     <div class="flex items-center space-x-2.5 w-full sm:w-auto">
@@ -166,8 +165,8 @@
                 </div>
             </div>
 
-            <!-- Master Requests Table -->
-            <div class="bg-white rounded-3xl shadow-sm border border-slate-200/80 overflow-hidden">
+            <!-- Master Requests Table (Full Width Resolution) -->
+            <div class="bg-white rounded-3xl shadow-sm border border-slate-200/80 overflow-hidden w-full">
                 <div class="p-4 sm:p-5 border-b border-slate-200/80 bg-slate-50/50 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
                     <h3 class="font-bold text-noor-800 text-xs sm:text-sm flex items-center space-x-2">
                         <i class="fa-solid fa-table-list text-noor-500"></i>
@@ -175,8 +174,8 @@
                     </h3>
                     <span id="recordCount" class="text-xs font-bold bg-orange-100 text-noor-700 px-3.5 py-1 rounded-full">0 Records</span>
                 </div>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left border-collapse min-w-[800px]">
+                <div class="overflow-x-auto w-full">
+                    <table class="w-full text-left border-collapse min-w-[900px]">
                         <thead>
                             <tr class="bg-noor-800 text-white text-[11px] uppercase tracking-wider">
                                 <th class="p-3 text-center w-10"><input type="checkbox" id="selectAllCheckbox" onchange="toggleSelectAll(this)" class="rounded cursor-pointer"></th>
@@ -201,13 +200,13 @@
     </main>
 
     <!-- FOOTER -->
-    <footer class="bg-white border-t border-slate-200/80 py-4 sm:py-5 mt-12 text-center text-xs text-slate-500">
+    <footer class="bg-white border-t border-slate-200/80 py-4 sm:py-5 mt-12 text-center text-xs text-slate-500 w-full">
         &copy; 2026 Al Noor United Fuel & Transport Co. (شركة النور المتحدة للوقود و النقليات). All rights reserved.
     </footer>
 
     <!-- DYNAMIC FORM MODAL -->
     <div id="formModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm hidden z-50 flex items-center justify-center p-2 sm:p-4 overflow-y-auto">
-        <div class="bg-white rounded-3xl shadow-2xl max-w-5xl w-full max-h-[94vh] overflow-y-auto p-4 sm:p-8 border-t-8 border-noor-500 my-auto">
+        <div class="bg-white rounded-3xl shadow-2xl max-w-6xl w-full max-h-[94vh] overflow-y-auto p-4 sm:p-8 border-t-8 border-noor-500 my-auto">
             
             <div class="flex justify-between items-start border-b pb-4 mb-6">
                 <div>
@@ -302,7 +301,7 @@
 
     <!-- VIEW & APPROVAL MODAL -->
     <div id="viewRequestModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm hidden z-50 flex items-center justify-center p-2 sm:p-4 overflow-y-auto">
-        <div class="bg-white rounded-3xl shadow-2xl max-w-3xl w-full max-h-[94vh] overflow-y-auto p-4 sm:p-8 border-t-8 border-noor-500 my-auto">
+        <div class="bg-white rounded-3xl shadow-2xl max-w-4xl w-full max-h-[94vh] overflow-y-auto p-4 sm:p-8 border-t-8 border-noor-500 my-auto">
             <div class="flex justify-between items-start border-b pb-4 mb-6">
                 <div>
                     <h3 id="modalReqTitle" class="text-lg sm:text-xl font-bold text-noor-800">Document Details</h3>
@@ -450,6 +449,7 @@
             const warehouseMenuContainer = document.getElementById('warehouseMenuContainer');
             const warehouseMenuBtnText = document.getElementById('warehouseMenuBtnText');
             const warehouseMenuOptions = document.getElementById('warehouseMenuOptions');
+            const adminLogoUploadContainer = document.getElementById('adminLogoUploadContainer');
 
             if (loginView) loginView.classList.add('hidden');
             if (dashboardView) dashboardView.classList.remove('hidden');
@@ -457,6 +457,16 @@
 
             if (displayUserId) displayUserId.innerText = currentUser.email;
             if (displayUserRole) displayUserRole.innerText = currentUser.dept;
+
+            if (adminLogoUploadContainer) {
+                if (currentUser.role === 'AdminDeleteAll') {
+                    adminLogoUploadContainer.classList.remove('hidden');
+                    adminLogoUploadContainer.classList.add('inline-flex');
+                } else {
+                    adminLogoUploadContainer.classList.remove('inline-flex');
+                    adminLogoUploadContainer.classList.add('hidden');
+                }
+            }
 
             if (passwordChangeBtn) {
                 if (currentUser.canChangePass) {
@@ -564,7 +574,6 @@
                 let canDelete = (currentUser && currentUser.role === 'AdminDeleteAll') || 
                                 (currentUser && currentUser.role === 'Requesting' && req.approverName.toLowerCase() === currentUser.email.toLowerCase() && (req.status === 'Initiated' || req.status === 'In Process') && req.lastStage && req.lastStage.includes('Initiated'));
 
-                // Can select for bulk approval if action is available for current user
                 let canAction = false;
                 if (req.status !== 'Closed' && req.status !== 'Rejected') {
                     let isAdmin = (currentUser && currentUser.role === 'AdminDeleteAll');
