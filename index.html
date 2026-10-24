@@ -138,8 +138,8 @@
                 </div>
 
                 <div class="flex flex-wrap items-center gap-3 w-full lg:w-auto justify-end">
-                    <!-- Warehouse Form Library Dropdown -->
-                    <div class="relative">
+                    <!-- Warehouse Form Library Dropdown (Hidden for Admin Delete-All user) -->
+                    <div id="warehouseMenuContainer" class="relative">
                         <button onclick="toggleWarehouseMenu()" class="bg-gradient-to-r from-noor-500 to-amber-500 hover:from-noor-600 hover:to-amber-600 text-white font-bold px-4 py-2 rounded-xl text-xs shadow transition flex items-center space-x-2">
                             <i class="fa-solid fa-folder-plus"></i>
                             <span>Warehouse Forms Library (Extended)</span>
@@ -192,7 +192,7 @@
                             <tr class="bg-noor-800 text-white text-[11px] uppercase tracking-wider">
                                 <th class="p-3">Doc ID</th>
                                 <th class="p-3">Date</th>
-                                <th class="p-3">Requester Type</th>
+                                <th class="p-3">Department</th>
                                 <th class="p-3">Form Type & Purpose / الطلب</th>
                                 <th class="p-3">Items Count</th>
                                 <th class="p-3">Current Status</th>
@@ -343,59 +343,21 @@
 
     <!-- JAVASCRIPT SYSTEM LOGIC -->
     <script>
-        // Case-insensitive users DB
-        // req@noor.com.sa -> Service Dept (No password change access)
-        // workshop@noor.com.sa -> Transport Dept (Can change password)
-        // account@noor.com.sa -> Accounting Dept for Service requests (Can change password)
-        // maintenance@noor.com.sa -> Maintenance Manager for Transport requests (Can change password)
-        // wh@noor.com.sa -> Warehouse Dept (Can change password)
+        // Case-insensitive users DB including new Administrator saif.ali@noor.com.sa
         let usersDb = JSON.parse(localStorage.getItem('noor_users')) || {
             "req@noor.com.sa": { pass: "Noor@123", role: "Requesting", dept: "Service Department", canChangePass: false },
             "workshop@noor.com.sa": { pass: "Noor@123", role: "Requesting", dept: "Transport Workshop", canChangePass: true },
             "account@noor.com.sa": { pass: "Noor@123", role: "Accounting", dept: "Accounting Department", canChangePass: true },
             "maintenance@noor.com.sa": { pass: "Noor@123", role: "MaintenanceManager", dept: "Maintenance Manager", canChangePass: true },
-            "wh@noor.com.sa": { pass: "Noor@123", role: "Warehouse", dept: "Warehouse Department", canChangePass: true }
+            "wh@noor.com.sa": { pass: "Noor@123", role: "Warehouse", dept: "Warehouse Department", canChangePass: true },
+            "saif.ali@noor.com.sa": { pass: "72724@Noor", role: "AdminDeleteAll", dept: "System Administrator", canChangePass: true }
         };
 
         let currentUser = JSON.parse(localStorage.getItem('noor_current_user')) || null;
         let customLogoData = localStorage.getItem('noor_custom_logo') || null;
 
-        let requests = JSON.parse(localStorage.getItem('noor_requests')) || [
-            {
-                id: "DOC-2026-001",
-                date: "2026-10-24",
-                department: "Service Department",
-                routingTarget: "Accounting",
-                purpose: "Office printer cartridges and paper",
-                formType: "Material Requisition",
-                items: [
-                    { name: "Printer Toner Black", code: "TN-401", unit: "Pcs", qty: 2, notes: "Office use" }
-                ],
-                status: "In Process",
-                lastStage: "Initiated by Service Dept",
-                approverName: "req@noor.com.sa",
-                history: [
-                    { stage: "Initiated", by: "req@noor.com.sa", date: "2026-10-24 08:30", note: "Created by Service Department" }
-                ]
-            },
-            {
-                id: "DOC-2026-002",
-                date: "2026-10-24",
-                department: "Transport Workshop",
-                routingTarget: "MaintenanceManager",
-                purpose: "Heavy vehicle brake pads",
-                formType: "Material Requisition",
-                items: [
-                    { name: "Brake Pads Heavy Duty", code: "BP-992", unit: "Sets", qty: 4, notes: "Truck #402" }
-                ],
-                status: "In Process",
-                lastStage: "Initiated by Transport Workshop",
-                approverName: "workshop@noor.com.sa",
-                history: [
-                    { stage: "Initiated", by: "workshop@noor.com.sa", date: "2026-10-24 09:15", note: "Created by Transport Workshop" }
-                ]
-            }
-        ];
+        // Sample data cleared out (starts empty)
+        let requests = JSON.parse(localStorage.getItem('noor_requests')) || [];
 
         window.onload = function() {
             applyCustomLogo();
@@ -478,6 +440,7 @@
             const displayUserId = document.getElementById('displayUserId');
             const displayUserRole = document.getElementById('displayUserRole');
             const passwordChangeBtn = document.getElementById('passwordChangeBtn');
+            const warehouseMenuContainer = document.getElementById('warehouseMenuContainer');
 
             if (loginView) loginView.classList.add('hidden');
             if (dashboardView) dashboardView.classList.remove('hidden');
@@ -486,12 +449,20 @@
             if (displayUserId) displayUserId.innerText = currentUser.email;
             if (displayUserRole) displayUserRole.innerText = currentUser.dept;
 
-            // Show password change button only if user has permission (e.g. workshop, account, maintenance, wh - NOT req@noor.com.sa)
             if (passwordChangeBtn) {
                 if (currentUser.canChangePass) {
                     passwordChangeBtn.classList.remove('hidden');
                 } else {
                     passwordChangeBtn.classList.add('hidden');
+                }
+            }
+
+            // Hide Warehouse Forms Library dropdown for AdminDeleteAll user (saif.ali@noor.com.sa)
+            if (warehouseMenuContainer) {
+                if (currentUser.role === 'AdminDeleteAll') {
+                    warehouseMenuContainer.classList.add('hidden');
+                } else {
+                    warehouseMenuContainer.classList.remove('hidden');
                 }
             }
 
@@ -530,7 +501,9 @@
                 if (req.status === 'Closed') badgeColor = "bg-green-100 text-green-800";
                 if (req.status === 'Rejected') badgeColor = "bg-red-100 text-red-800";
 
-                let canDelete = (currentUser && currentUser.role === 'Requesting' && req.approverName.toLowerCase() === currentUser.email.toLowerCase() && (req.status === 'Initiated' || req.status === 'In Process') && req.lastStage && req.lastStage.includes('Initiated'));
+                // Deletion rule: Admin (saif.ali@noor.com.sa) can delete ANYTHING. Requesting dept can delete unapproved items.
+                let canDelete = (currentUser && currentUser.role === 'AdminDeleteAll') || 
+                                (currentUser && currentUser.role === 'Requesting' && req.approverName.toLowerCase() === currentUser.email.toLowerCase() && (req.status === 'Initiated' || req.status === 'In Process') && req.lastStage && req.lastStage.includes('Initiated'));
 
                 let tr = document.createElement('tr');
                 tr.className = "hover:bg-slate-50 transition";
@@ -556,7 +529,6 @@
             });
         }
 
-        // Form Modal launcher based on current requester
         function openFormModal(formTypeName) {
             if (!currentUser || currentUser.role !== 'Requesting') {
                 alert("Only Requesting Department users (Service Dept or Transport Workshop) can initiate new forms.");
@@ -703,7 +675,7 @@
             const modalReqTitle = document.getElementById('modalReqTitle');
             const modalReqMeta = document.getElementById('modalReqMeta');
             if (modalReqTitle) modalReqTitle.innerText = `${req.formType}: ${req.id} (${req.department})`;
-            if (modalReqMeta) modalReqMeta.innerText = `Created on: ${req.date} | Purpose: ${req.purpose} | Target Reviewer: ${req.routingTarget}`;
+            if (modalReqMeta) modalReqMeta.innerText = `Created on: ${req.date} | Purpose: ${req.purpose} | Target Reviewer: ${req.routingTarget || 'N/A'}`;
 
             let itemsHtml = `
                 <div class="bg-slate-50 p-3 rounded-xl mb-4 border">
@@ -748,32 +720,29 @@
 
             let actionHtml = '';
 
-            if (req.status !== 'Closed' && req.status !== 'Rejected') {
-                if (currentUser && currentUser.role === currentUser.role && req.status === 'In Process') {
-                    // Check permissions for reviewer vs warehouse
-                    let isAssignedReviewer = (currentUser.role === 'Accounting' && req.routingTarget === 'Accounting') || 
-                                             (currentUser.role === 'MaintenanceManager' && req.routingTarget === 'MaintenanceManager');
-                    let isWarehouse = (currentUser.role === 'Warehouse');
+            if (currentUser && currentUser.role === 'AdminDeleteAll') {
+                if (notesContainer) notesContainer.classList.add('hidden');
+                actionHtml = `<span class="text-xs font-bold text-slate-500">Administrator Mode: You can delete this document from the main table if needed.</span>`;
+            } else if (req.status !== 'Closed' && req.status !== 'Rejected') {
+                let isAssignedReviewer = (currentUser && currentUser.role === 'Accounting' && req.routingTarget === 'Accounting') || 
+                                         (currentUser && currentUser.role === 'MaintenanceManager' && req.routingTarget === 'MaintenanceManager');
+                let isWarehouse = (currentUser && currentUser.role === 'Warehouse');
 
-                    if (isAssignedReviewer) {
-                        if (notesContainer) notesContainer.classList.remove('hidden');
-                        actionHtml = `
-                            <button onclick="processApproval('${req.id}', 'Reject', '${currentUser.dept}')" class="px-4 py-2 bg-red-600 text-white rounded-xl text-xs font-bold hover:bg-red-700 shadow">Reject Document</button>
-                            <button onclick="processApproval('${req.id}', 'ApproveReviewer', '${currentUser.dept}')" class="px-5 py-2 bg-emerald-600 text-white rounded-xl text-xs font-bold hover:bg-emerald-700 shadow">Approve & Forward to Warehouse (Level 2)</button>
-                        `;
-                    } else if (isWarehouse && req.lastStage.includes('Approved')) {
-                        if (notesContainer) notesContainer.classList.remove('hidden');
-                        actionHtml = `
-                            <button onclick="processApproval('${req.id}', 'Reject', 'Warehouse')" class="px-4 py-2 bg-red-600 text-white rounded-xl text-xs font-bold hover:bg-red-700 shadow">Reject Document</button>
-                            <button onclick="processApproval('${req.id}', 'Close', 'Warehouse')" class="px-5 py-2 bg-noor-800 text-white rounded-xl text-xs font-bold hover:bg-slate-900 shadow">Finalize Dispatch & Close Document (Level 3)</button>
-                        `;
-                    } else {
-                        if (notesContainer) notesContainer.classList.add('hidden');
-                        actionHtml = `<span class="text-xs text-slate-400 italic">Awaiting action from assigned reviewer (${req.routingTarget})...</span>`;
-                    }
+                if (isAssignedReviewer) {
+                    if (notesContainer) notesContainer.classList.remove('hidden');
+                    actionHtml = `
+                        <button onclick="processApproval('${req.id}', 'Reject', '${currentUser.dept}')" class="px-4 py-2 bg-red-600 text-white rounded-xl text-xs font-bold hover:bg-red-700 shadow">Reject Document</button>
+                        <button onclick="processApproval('${req.id}', 'ApproveReviewer', '${currentUser.dept}')" class="px-5 py-2 bg-emerald-600 text-white rounded-xl text-xs font-bold hover:bg-emerald-700 shadow">Approve & Forward to Warehouse (Level 2)</button>
+                    `;
+                } else if (isWarehouse && req.lastStage.includes('Approved')) {
+                    if (notesContainer) notesContainer.classList.remove('hidden');
+                    actionHtml = `
+                        <button onclick="processApproval('${req.id}', 'Reject', 'Warehouse')" class="px-4 py-2 bg-red-600 text-white rounded-xl text-xs font-bold hover:bg-red-700 shadow">Reject Document</button>
+                        <button onclick="processApproval('${req.id}', 'Close', 'Warehouse')" class="px-5 py-2 bg-noor-800 text-white rounded-xl text-xs font-bold hover:bg-slate-900 shadow">Finalize Dispatch & Close Document (Level 3)</button>
+                    `;
                 } else {
                     if (notesContainer) notesContainer.classList.add('hidden');
-                    actionHtml = `<span class="text-xs text-slate-400 italic">Awaiting respective department action...</span>`;
+                    actionHtml = `<span class="text-xs text-slate-400 italic">Awaiting action from assigned reviewer (${req.routingTarget || 'Reviewer'})...</span>`;
                 }
             } else {
                 if (notesContainer) notesContainer.classList.add('hidden');
