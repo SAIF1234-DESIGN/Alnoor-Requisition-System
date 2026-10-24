@@ -36,11 +36,10 @@
 </head>
 <body class="bg-slate-50 text-slate-800 font-sans min-h-screen flex flex-col justify-between">
 
-    <!-- Top Header styled with Noor branding and sunburst accent -->
+    <!-- Top Header -->
     <header class="bg-noor-800 text-white shadow-md border-b-4 border-noor-500">
         <div class="max-w-7xl mx-auto px-4 py-3 flex flex-col md:flex-row justify-between items-center">
             <div class="flex items-center space-x-4">
-                <!-- Exact Noor Sunburst Logo Simulation based on portal brand image -->
                 <div class="w-12 h-12 bg-gradient-to-tr from-noor-500 to-amber-400 rounded-full flex items-center justify-center text-white shadow-lg relative overflow-hidden ring-2 ring-white/20">
                     <i class="fa-solid fa-sun text-2xl animate-spin" style="animation-duration: 20s;"></i>
                 </div>
@@ -75,7 +74,7 @@
     <!-- Main Content Body -->
     <main class="max-w-7xl mx-auto px-4 py-8 flex-grow w-full">
 
-        <!-- LOGIN VIEW (Clean & Secured without displaying passwords) -->
+        <!-- LOGIN VIEW -->
         <div id="loginView" class="max-w-md mx-auto bg-white rounded-2xl shadow-xl border border-slate-200 p-8 mt-6">
             <div class="text-center mb-6">
                 <div class="w-16 h-16 bg-gradient-to-tr from-noor-500 to-amber-400 text-white rounded-full flex items-center justify-center mx-auto mb-3 shadow-md text-2xl ring-4 ring-orange-100">
@@ -213,7 +212,7 @@
         &copy; 2026 Al Noor United Fuel & Transport Co. (شركة النور المتحدة للوقود و النقليات). All rights reserved.
     </footer>
 
-    <!-- WAREHOUSE & REQUISITION FORM MODAL (Content-Size Aware Columns) -->
+    <!-- WAREHOUSE & REQUISITION FORM MODAL -->
     <div id="formModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center p-4 overflow-y-auto">
         <div class="bg-white rounded-2xl shadow-2xl max-w-5xl w-full max-h-[90vh] overflow-y-auto p-6 md:p-8 border-t-4 border-noor-500">
             
@@ -239,7 +238,7 @@
                     </div>
                 </div>
 
-                <!-- Content Size Aware Items Table -->
+                <!-- Items Table -->
                 <div>
                     <div class="flex justify-between items-center mb-2">
                         <label class="text-xs font-black text-noor-800 uppercase font-arabic">المطلوب صرف الأصناف المذكورة أدناه (Requested Items List)</label>
@@ -268,7 +267,7 @@
                     </div>
                 </div>
 
-                <!-- Signatures Section matching physical form -->
+                <!-- Signatures Section -->
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4 border-t border-slate-200 text-center text-xs text-slate-600">
                     <div class="bg-slate-50 p-3 rounded-xl border border-dashed border-slate-300">
                         <p class="font-bold text-slate-800">توقيع الفني (Technical Signature)</p>
@@ -295,7 +294,7 @@
         </div>
     </div>
 
-    <!-- VIEW & APPROVAL MODAL WITH OPTIONAL NOTES -->
+    <!-- VIEW & APPROVAL MODAL -->
     <div id="viewRequestModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center p-4 overflow-y-auto">
         <div class="bg-white rounded-2xl shadow-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto p-6 md:p-8 border-t-4 border-noor-500">
             <div class="flex justify-between items-start border-b pb-4 mb-4">
@@ -306,20 +305,15 @@
                 <button onclick="closeViewModal()" class="text-slate-400 hover:text-slate-600 font-bold text-xl p-2">&times;</button>
             </div>
 
-            <div id="modalReqBody" class="space-y-4 text-xs">
-                <!-- Dynamic Request details & approval logs -->
-            </div>
+            <div id="modalReqBody" class="space-y-4 text-xs"></div>
 
-            <!-- Optional Approval Notes Input -->
             <div id="approvalNotesContainer" class="mt-4 pt-4 border-t border-slate-200 hidden">
                 <label class="block text-xs font-bold text-slate-700 mb-1">Optional Approval / Rejection Notes (ملاحظات الاختيار)</label>
                 <textarea id="optionalApprovalNote" rows="2" placeholder="Add any specific remarks or conditions for this action..." 
                     class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-noor-500 focus:outline-none"></textarea>
             </div>
 
-            <div id="modalActionControls" class="mt-6 pt-4 border-t flex justify-end space-x-3">
-                <!-- Action buttons based on role & status -->
-            </div>
+            <div id="modalActionControls" class="mt-6 pt-4 border-t flex justify-end space-x-3"></div>
         </div>
     </div>
 
@@ -348,7 +342,6 @@
 
     <!-- JAVASCRIPT SYSTEM LOGIC -->
     <script>
-        // Users Database with updated Level 1 ID: Req@noor.com.sa
         let usersDb = JSON.parse(localStorage.getItem('noor_users')) || {
             "Req@noor.com.sa": { pass: "Noor@123", role: "Requesting", dept: "Level 1 - Requesting Department" },
             "Account@noor.com.sa": { pass: "Noor@123", role: "Accounting", dept: "Level 2 - Accounting Department" },
@@ -357,7 +350,6 @@
 
         let currentUser = JSON.parse(localStorage.getItem('noor_current_user')) || null;
 
-        // Mock Initial Requisition records
         let requests = JSON.parse(localStorage.getItem('noor_requests')) || [
             {
                 id: "REQ-2026-001",
@@ -401,10 +393,10 @@
             } else {
                 showLogin();
             }
-            // Close warehouse dropdown when clicking outside
             window.onclick = function(event) {
                 if (!event.target.closest('.relative')) {
-                    document.getElementById('warehouseMenu').classList.add('hidden');
+                    const menu = document.getElementById('warehouseMenu');
+                    if (menu) menu.classList.add('hidden');
                 }
             };
         };
@@ -430,25 +422,38 @@
         }
 
         function showLogin() {
-            document.getElementById('loginView').classList.remove('hidden');
-            document.getElementById('dashboardView').classList.add('hidden');
-            document.getElementById('userSessionHeader').classList.add('hidden');
-            document.getElementById('loginForm').reset();
+            const loginView = document.getElementById('loginView');
+            const dashboardView = document.getElementById('dashboardView');
+            const userSessionHeader = document.getElementById('userSessionHeader');
+            const loginForm = document.getElementById('loginForm');
+
+            if (loginView) loginView.classList.remove('hidden');
+            if (dashboardView) dashboardView.classList.add('hidden');
+            if (userSessionHeader) userSessionHeader.classList.add('hidden');
+            if (loginForm) loginForm.reset();
         }
 
         function showDashboard() {
-            document.getElementById('loginView').classList.add('hidden');
-            document.getElementById('dashboardView').classList.remove('hidden');
-            document.getElementById('userSessionHeader').classList.remove('hidden');
+            const loginView = document.getElementById('loginView');
+            const dashboardView = document.getElementById('dashboardView');
+            const userSessionHeader = document.getElementById('userSessionHeader');
+            const displayUserId = document.getElementById('displayUserId');
+            const displayUserRole = document.getElementById('displayUserRole');
+            const newRequisitionBtn = document.getElementById('newRequisitionBtn');
 
-            document.getElementById('displayUserId').innerText = currentUser.email;
-            document.getElementById('displayUserRole').innerText = currentUser.dept;
+            if (loginView) loginView.classList.add('hidden');
+            if (dashboardView) dashboardView.classList.remove('hidden');
+            if (userSessionHeader) userSessionHeader.classList.remove('hidden');
 
-            // Show New Requisition button only for Level 1 Requesting Dept
-            if (currentUser.role === 'Requesting') {
-                document.getElementById('newRequisitionBtn').classList.remove('hidden');
-            } else {
-                document.getElementById('newRequisitionBtn').classList.add('hidden');
+            if (displayUserId) displayUserId.innerText = currentUser.email;
+            if (displayUserRole) displayUserRole.innerText = currentUser.dept;
+
+            if (newRequisitionBtn) {
+                if (currentUser.role === 'Requesting') {
+                    newRequisitionBtn.classList.remove('hidden');
+                } else {
+                    newRequisitionBtn.classList.add('hidden');
+                }
             }
 
             renderDashboard();
@@ -456,12 +461,14 @@
 
         function toggleWarehouseMenu() {
             const menu = document.getElementById('warehouseMenu');
-            menu.classList.toggle('hidden');
+            if (menu) menu.classList.toggle('hidden');
         }
 
         function renderDashboard() {
-            const filter = document.getElementById('statusFilter').value;
+            const statusFilter = document.getElementById('statusFilter');
+            const filter = statusFilter ? statusFilter.value : 'ALL';
             const tbody = document.getElementById('requestsTableBody');
+            if (!tbody) return;
             tbody.innerHTML = '';
 
             let filtered = requests;
@@ -469,7 +476,8 @@
                 filtered = requests.filter(r => r.status === filter);
             }
 
-            document.getElementById('recordCount').innerText = `${filtered.length} Records`;
+            const recordCount = document.getElementById('recordCount');
+            if (recordCount) recordCount.innerText = `${filtered.length} Records`;
 
             if (filtered.length === 0) {
                 tbody.innerHTML = `<tr><td colspan="8" class="text-center py-6 text-slate-400 italic">No requisition records found.</td></tr>`;
@@ -483,8 +491,7 @@
                 if (req.status === 'Closed') badgeColor = "bg-green-100 text-green-800";
                 if (req.status === 'Rejected') badgeColor = "bg-red-100 text-red-800";
 
-                // Check if deletable: only Requester level can delete, AND status must still be 'Initiated' or 'In Process' (not approved by Level 2 yet)
-                let canDelete = (currentUser.role === 'Requesting' && (req.status === 'Initiated' || req.status === 'In Process') && req.lastStage.includes('Initiated'));
+                let canDelete = (currentUser && currentUser.role === 'Requesting' && (req.status === 'Initiated' || req.status === 'In Process') && req.lastStage && req.lastStage.includes('Initiated'));
 
                 let tr = document.createElement('tr');
                 tr.className = "hover:bg-slate-50 transition";
@@ -510,32 +517,41 @@
             });
         }
 
-        // Warehouse Forms Library Modal Opening
         function openFormModal(formTypeName) {
-            document.getElementById('formModalTitle').innerText = 
-                formTypeName === 'Material Requisition' ? 'أمر صرف مواد من المخزن (Material Requisition)' :
-                formTypeName === 'Stock Receipt' ? 'إيصال استلام مواد للمخزن (Goods Receipt Note)' :
-                formTypeName === 'Stock Transfer' ? 'سند تحويل بين المستودعات (Stock Transfer)' : 'محضر جرد المخزن (Stock Audit Sheet)';
+            const formModalTitle = document.getElementById('formModalTitle');
+            if (formModalTitle) {
+                formModalTitle.innerText = 
+                    formTypeName === 'Material Requisition' ? 'أمر صرف مواد من المخزن (Material Requisition)' :
+                    formTypeName === 'Stock Receipt' ? 'إيصال استلام مواد للمخزن (Goods Receipt Note)' :
+                    formTypeName === 'Stock Transfer' ? 'سند تحويل بين المستودعات (Stock Transfer)' : 'محضر جرد المخزن (Stock Audit Sheet)';
+            }
             
-            document.getElementById('formModal').classList.remove('hidden');
-            document.getElementById('activeRequisitionForm').reset();
-            document.getElementById('formItemsTableBody').innerHTML = '';
+            const formModal = document.getElementById('formModal');
+            if (formModal) formModal.classList.remove('hidden');
+            
+            const activeForm = document.getElementById('activeRequisitionForm');
+            if (activeForm) activeForm.reset();
+            
+            const tbody = document.getElementById('formItemsTableBody');
+            if (tbody) tbody.innerHTML = '';
             addItemRow();
         }
 
         function closeFormModal() {
-            document.getElementById('formModal').classList.add('hidden');
+            const formModal = document.getElementById('formModal');
+            if (formModal) formModal.classList.add('hidden');
         }
 
         function addItemRow() {
             const tbody = document.getElementById('formItemsTableBody');
+            if (!tbody) return;
             let tr = document.createElement('tr');
             tr.className = "border-b item-row";
             tr.innerHTML = `
                 <td class="p-2 font-bold row-idx">${tbody.children.length + 1}</td>
                 <td class="p-2"><input type="text" required class="item-name w-full px-2 py-1.5 bg-slate-50 border rounded-lg text-xs" placeholder="Item Name / Description"></td>
                 <td class="p-2"><input type="text" class="item-code w-full px-2 py-1.5 bg-slate-50 border rounded-lg text-xs" placeholder="Item Code"></td>
-                <td class="p-2"><input type="text" required class="item-unit w-full px-2 py-1.5 bg-slate-50 border rounded-lg text-xs" placeholder="Unit (Pcs/Sets/Drums)"></td>
+                <td class="p-2"><input type="text" required class="item-unit w-full px-2 py-1.5 bg-slate-50 border rounded-lg text-xs" placeholder="Unit"></td>
                 <td class="p-2"><input type="number" min="1" value="1" required class="item-qty w-full px-2 py-1.5 bg-slate-50 border rounded-lg text-xs text-center font-bold"></td>
                 <td class="p-2"><input type="text" class="item-notes w-full px-2 py-1.5 bg-slate-50 border rounded-lg text-xs" placeholder="Notes"></td>
                 <td class="p-2"><button type="button" onclick="this.closest('tr').remove(); renumberRows();" class="text-red-400 hover:text-red-700 font-bold p-1">&times;</button></td>
@@ -545,15 +561,22 @@
 
         function renumberRows() {
             document.querySelectorAll('#formItemsTableBody .item-row').forEach((row, idx) => {
-                row.querySelector('.row-idx').innerText = idx + 1;
+                const idxEl = row.querySelector('.row-idx');
+                if (idxEl) idxEl.innerText = idx + 1;
             });
         }
 
         function submitFormRequisition(e) {
             e.preventDefault();
-            const dept = document.getElementById('formDept').value;
-            const purpose = document.getElementById('formPurpose').value;
-            const formTitle = document.getElementById('formModalTitle').innerText.split('(')[0].trim();
+            const deptInput = document.getElementById('formDept');
+            const purposeInput = document.getElementById('formPurpose');
+            const formModalTitle = document.getElementById('formModalTitle');
+
+            if (!deptInput || !purposeInput || !formModalTitle) return;
+
+            const dept = deptInput.value;
+            const purpose = purposeInput.value;
+            const formTitle = formModalTitle.innerText.split('(')[0].trim();
             
             let items = [];
             document.querySelectorAll('#formItemsTableBody .item-row').forEach(row => {
@@ -580,9 +603,9 @@
                 items: items,
                 status: "In Process",
                 lastStage: "Initiated by Level 1 (Requesting Dept)",
-                approverName: currentUser.email,
+                approverName: currentUser ? currentUser.email : 'Req@noor.com.sa',
                 history: [
-                    { stage: "Initiated", by: currentUser.email, date: new Date().toLocaleString(), note: `Form created & submitted successfully.` }
+                    { stage: "Initiated", by: currentUser ? currentUser.email : 'Req@noor.com.sa', date: new Date().toLocaleString(), note: `Form created & submitted successfully.` }
                 ]
             };
 
@@ -593,7 +616,6 @@
             alert(`Document ${newReq.id} successfully created and forwarded to Accounting (Level 2).`);
         }
 
-        // Delete Requisition (Only requester level if not approved by 2nd level)
         function deleteRequest(id) {
             if (confirm(`Are you sure you want to delete requisition ${id}? This action cannot be undone.`)) {
                 requests = requests.filter(r => r.id !== id);
@@ -603,15 +625,16 @@
             }
         }
 
-        // View & Approval Modal Logic
         let currentViewingId = null;
         function openViewModal(id) {
             currentViewingId = id;
             const req = requests.find(r => r.id === id);
             if (!req) return;
 
-            document.getElementById('modalReqTitle').innerText = `${req.formType}: ${req.id} (${req.department})`;
-            document.getElementById('modalReqMeta').innerText = `Created on: ${req.date} | Purpose: ${req.purpose}`;
+            const modalReqTitle = document.getElementById('modalReqTitle');
+            const modalReqMeta = document.getElementById('modalReqMeta');
+            if (modalReqTitle) modalReqTitle.innerText = `${req.formType}: ${req.id} (${req.department})`;
+            if (modalReqMeta) modalReqMeta.innerText = `Created on: ${req.date} | Purpose: ${req.purpose}`;
 
             let itemsHtml = `
                 <div class="bg-slate-50 p-3 rounded-xl mb-4 border">
@@ -646,42 +669,46 @@
             });
             historyHtml += `</div></div>`;
 
-            document.getElementById('modalReqBody').innerHTML = itemsHtml + historyHtml;
+            const modalReqBody = document.getElementById('modalReqBody');
+            if (modalReqBody) modalReqBody.innerHTML = itemsHtml + historyHtml;
 
             const actionControls = document.getElementById('modalActionControls');
             const notesContainer = document.getElementById('approvalNotesContainer');
-            document.getElementById('optionalApprovalNote').value = '';
+            const optionalNote = document.getElementById('optionalApprovalNote');
+            if (optionalNote) optionalNote.value = '';
 
             let actionHtml = '';
 
             if (req.status !== 'Closed' && req.status !== 'Rejected') {
-                if (currentUser.role === 'Accounting' && req.status === 'In Process') {
-                    notesContainer.classList.remove('hidden');
+                if (currentUser && currentUser.role === 'Accounting' && req.status === 'In Process') {
+                    if (notesContainer) notesContainer.classList.remove('hidden');
                     actionHtml = `
                         <button onclick="processApproval('${req.id}', 'Reject', 'Accounting')" class="px-4 py-2 bg-red-600 text-white rounded-xl text-xs font-bold hover:bg-red-700 shadow">Reject Request</button>
                         <button onclick="processApproval('${req.id}', 'Approve', 'Accounting')" class="px-5 py-2 bg-emerald-600 text-white rounded-xl text-xs font-bold hover:bg-emerald-700 shadow">Approve & Forward to Warehouse (Level 2)</button>
                     `;
-                } else if (currentUser.role === 'Warehouse' && (req.status === 'In Process' || req.status === 'Approved')) {
-                    notesContainer.classList.remove('hidden');
+                } else if (currentUser && currentUser.role === 'Warehouse' && (req.status === 'In Process' || req.status === 'Approved')) {
+                    if (notesContainer) notesContainer.classList.remove('hidden');
                     actionHtml = `
                         <button onclick="processApproval('${req.id}', 'Reject', 'Warehouse')" class="px-4 py-2 bg-red-600 text-white rounded-xl text-xs font-bold hover:bg-red-700 shadow">Reject Request</button>
                         <button onclick="processApproval('${req.id}', 'Close', 'Warehouse')" class="px-5 py-2 bg-noor-800 text-white rounded-xl text-xs font-bold hover:bg-slate-900 shadow">Finalize Dispatch & Close Request (Level 3)</button>
                     `;
                 } else {
-                    notesContainer.classList.add('hidden');
+                    if (notesContainer) notesContainer.classList.add('hidden');
                     actionHtml = `<span class="text-xs text-slate-400 italic">Awaiting action from respective department level...</span>`;
                 }
             } else {
-                notesContainer.classList.add('hidden');
+                if (notesContainer) notesContainer.classList.add('hidden');
                 actionHtml = `<span class="text-xs font-bold text-slate-500">Document lifecycle is finalized (${req.status}).</span>`;
             }
 
-            actionControls.innerHTML = actionHtml;
-            document.getElementById('viewRequestModal').classList.remove('hidden');
+            if (actionControls) actionControls.innerHTML = actionHtml;
+            const viewModal = document.getElementById('viewRequestModal');
+            if (viewModal) viewModal.classList.remove('hidden');
         }
 
         function closeViewModal() {
-            document.getElementById('viewRequestModal').classList.add('hidden');
+            const viewModal = document.getElementById('viewRequestModal');
+            if (viewModal) viewModal.classList.add('hidden');
         }
 
         function processApproval(id, action, deptRole) {
@@ -689,24 +716,25 @@
             if (!req) return;
 
             const timestamp = new Date().toLocaleString();
-            const optionalNote = document.getElementById('optionalApprovalNote').value.trim();
+            const optionalNoteEl = document.getElementById('optionalApprovalNote');
+            const optionalNote = optionalNoteEl ? optionalNoteEl.value.trim() : '';
             const noteText = optionalNote ? `Note: ${optionalNote}` : `Action processed at ${deptRole} stage.`;
 
             if (action === 'Approve') {
                 req.status = 'Approved';
                 req.lastStage = 'Approved by Accounting (Level 2)';
-                req.approverName = currentUser.email;
-                req.history.push({ stage: "Accounting Approval", by: currentUser.email, date: timestamp, note: noteText });
+                req.approverName = currentUser ? currentUser.email : 'Account@noor.com.sa';
+                req.history.push({ stage: "Accounting Approval", by: req.approverName, date: timestamp, note: noteText });
             } else if (action === 'Close') {
                 req.status = 'Closed';
                 req.lastStage = 'Closed & Dispatched by Warehouse (Level 3)';
-                req.approverName = currentUser.email;
-                req.history.push({ stage: "Warehouse Dispatch / Closed", by: currentUser.email, date: timestamp, note: noteText });
+                req.approverName = currentUser ? currentUser.email : 'Wh@noor.com.sa';
+                req.history.push({ stage: "Warehouse Dispatch / Closed", by: req.approverName, date: timestamp, note: noteText });
             } else if (action === 'Rejected' || action === 'Reject') {
                 req.status = 'Rejected';
                 req.lastStage = `Rejected by ${deptRole}`;
-                req.approverName = currentUser.email;
-                req.history.push({ stage: "Rejected", by: currentUser.email, date: timestamp, note: noteText });
+                req.approverName = currentUser ? currentUser.email : deptRole;
+                req.history.push({ stage: "Rejected", by: req.approverName, date: timestamp, note: noteText });
             }
 
             localStorage.setItem('noor_requests', JSON.stringify(requests));
@@ -715,23 +743,30 @@
             alert(`Document ${id} successfully updated to: ${req.status}`);
         }
 
-        // Password Update
         function openPasswordModal() {
-            document.getElementById('passwordModal').classList.remove('hidden');
-            document.getElementById('currentPassInput').value = '';
-            document.getElementById('newPassInput').value = '';
+            const passwordModal = document.getElementById('passwordModal');
+            if (passwordModal) passwordModal.classList.remove('hidden');
+            const currentPass = document.getElementById('currentPassInput');
+            const newPass = document.getElementById('newPassInput');
+            if (currentPass) currentPass.value = '';
+            if (newPass) newPass.value = '';
         }
 
         function closePasswordModal() {
-            document.getElementById('passwordModal').classList.add('hidden');
+            const passwordModal = document.getElementById('passwordModal');
+            if (passwordModal) passwordModal.classList.add('hidden');
         }
 
         function handlePasswordUpdate(e) {
             e.preventDefault();
-            const currentPass = document.getElementById('currentPassInput').value;
-            const newPass = document.getElementById('newPassInput').value;
+            const currentPassInput = document.getElementById('currentPassInput');
+            const newPassInput = document.getElementById('newPassInput');
+            if (!currentPassInput || !newPassInput || !currentUser) return;
 
-            if (usersDb[currentUser.email].pass === currentPass) {
+            const currentPass = currentPassInput.value;
+            const newPass = newPassInput.value;
+
+            if (usersDb[currentUser.email] && usersDb[currentUser.email].pass === currentPass) {
                 usersDb[currentUser.email].pass = newPass;
                 localStorage.setItem('noor_users', JSON.stringify(usersDb));
                 closePasswordModal();
@@ -741,7 +776,6 @@
             }
         }
 
-        // CSV Export
         function exportTableToCSV() {
             let csv = [];
             let headers = ["Request ID", "Date", "Department", "Form Type", "Purpose", "Items Count", "Status", "Last Approval Stage", "Approver"];
