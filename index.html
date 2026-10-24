@@ -97,7 +97,7 @@
                     <label class="block text-xs font-bold text-slate-700 mb-1.5">User ID / Email</label>
                     <div class="relative">
                         <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-400"><i class="fa-solid fa-user"></i></span>
-                        <input type="text" id="loginEmail" required placeholder="e.g. saif.ali@noor.com.sa" 
+                        <input type="text" id="loginEmail" required placeholder="e.g. saif.ali@noor.com" 
                             class="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-300 rounded-2xl text-sm focus:ring-2 focus:ring-noor-500 focus:bg-white focus:outline-none transition">
                     </div>
                 </div>
@@ -363,18 +363,18 @@
     <!-- JAVASCRIPT SYSTEM LOGIC -->
     <script>
         let usersDb = JSON.parse(localStorage.getItem('noor_users')) || {
-            "req@noor.com.sa": { pass: "Noor@123", role: "Requesting", dept: "Service Department", canChangePass: false },
-            "workshop@noor.com.sa": { pass: "Noor@123", role: "Requesting", dept: "Transport Workshop", canChangePass: true, workshopOnly: true },
+            "req@noor.com": { pass: "Noor@123", role: "Requesting", dept: "Service Department", canChangePass: false },
+            "workshop@noor.com": { pass: "Noor@123", role: "Requesting", dept: "Transport Workshop", canChangePass: true, workshopOnly: true },
             
-            "main.wh@noor.com.sa": { pass: "Noor@123", role: "Warehouse", dept: "Main Warehouse", warehouseName: "Main Warehouse", canChangePass: true },
-            "south.wh@noor.com.sa": { pass: "Noor@123", role: "Warehouse", dept: "Southern Region Warehouse", warehouseName: "Southern Region Warehouse", canChangePass: true },
-            "east.wh@noor.com.sa": { pass: "Noor@123", role: "Warehouse", dept: "Eastern Region Warehouse", warehouseName: "Eastern Region Warehouse", canChangePass: true },
-            "hail.wh@noor.com.sa": { pass: "Noor@123", role: "Warehouse", dept: "Hail Region Warehouse", warehouseName: "Hail Region Warehouse", canChangePass: true },
+            "main.wh@noor.com": { pass: "Noor@123", role: "Warehouse", dept: "Main Warehouse", warehouseName: "Main Warehouse", canChangePass: true },
+            "south.wh@noor.com": { pass: "Noor@123", role: "Warehouse", dept: "Southern Region Warehouse", warehouseName: "Southern Region Warehouse", canChangePass: true },
+            "east.wh@noor.com": { pass: "Noor@123", role: "Warehouse", dept: "Eastern Region Warehouse", warehouseName: "Eastern Region Warehouse", canChangePass: true },
+            "hail.wh@noor.com": { pass: "Noor@123", role: "Warehouse", dept: "Hail Region Warehouse", warehouseName: "Hail Region Warehouse", canChangePass: true },
 
-            "account@noor.com.sa": { pass: "Noor@123", role: "Accounting", dept: "Accounting Department", canChangePass: true },
-            "maintenance@noor.com.sa": { pass: "Noor@123", role: "MaintenanceManager", dept: "Maintenance Manager", canChangePass: true },
+            "account@noor.com": { pass: "Noor@123", role: "Accounting", dept: "Accounting Department", canChangePass: true },
+            "maintenance@noor.com": { pass: "Noor@123", role: "MaintenanceManager", dept: "Maintenance Manager", canChangePass: true },
             
-            "saif.ali@noor.com.sa": { pass: "72724@Noor", role: "AdminDeleteAll", dept: "System Administrator", canChangePass: true }
+            "saif.ali@noor.com": { pass: "72724@Noor", role: "AdminDeleteAll", dept: "System Administrator", canChangePass: true }
         };
 
         let currentUser = JSON.parse(localStorage.getItem('noor_current_user')) || null;
@@ -592,7 +592,6 @@
             if (!currentUser || req.status === 'Closed' || req.status === 'Rejected') return false;
             let isAdmin = (currentUser.role === 'AdminDeleteAll');
             
-            // Allow Main WH and Southern WH users to mutually cross-approve requests destined for either Main Warehouse or Southern Region Warehouse
             let isMainOrSouthWHUser = (currentUser.role === 'Warehouse' && (currentUser.warehouseName === 'Main Warehouse' || currentUser.warehouseName === 'Southern Region Warehouse'));
             let isTargetMainOrSouth = (req.warehouse === 'Main Warehouse' || req.warehouse === 'Southern Region Warehouse');
             let isRegionalWarehouse = (currentUser.role === 'Warehouse' && (req.warehouse === currentUser.warehouseName || (isMainOrSouthWHUser && isTargetMainOrSouth)));
@@ -782,7 +781,7 @@
             const routingManagerSignLabel = document.getElementById('routingManagerSignLabel');
 
             formDept.value = currentUser.dept;
-            if (currentUser.email.toLowerCase() === 'req@noor.com.sa') {
+            if (currentUser.email.toLowerCase() === 'req@noor.com') {
                 routingManagerSignLabel.innerText = '3. قسم المحاسبة (Accounting Dept)';
             } else {
                 routingManagerSignLabel.innerText = '3. مدير الصيانة (Maintenance Manager)';
@@ -885,7 +884,7 @@
             const issueTo = issueToInput.value;
             const costCentre = costCentreInput ? costCentreInput.value.trim() : '';
             const formTitle = formModalTitle.innerText.split('(')[0].trim();
-            const routingTarget = (currentUser.email.toLowerCase() === 'req@noor.com.sa') ? 'Accounting' : 'MaintenanceManager';
+            const routingTarget = (currentUser.email.toLowerCase() === 'req@noor.com') ? 'Accounting' : 'MaintenanceManager';
             
             let items = [];
             document.querySelectorAll('#formItemsTableBody .item-row').forEach(row => {
