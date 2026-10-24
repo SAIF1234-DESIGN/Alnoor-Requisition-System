@@ -135,6 +135,12 @@
                             <option value="Rejected">Rejected</option>
                         </select>
                     </div>
+
+                    <!-- Bulk Action Button -->
+                    <button id="bulkApproveBtn" onclick="bulkApproveSelected()" class="hidden bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-4 py-2.5 rounded-2xl text-xs transition shadow-sm items-center space-x-1.5">
+                        <i class="fa-solid fa-check-double"></i>
+                        <span id="bulkApproveText">Approve Selected (0)</span>
+                    </button>
                 </div>
 
                 <div class="flex flex-wrap items-center gap-3 w-full lg:w-auto justify-end">
@@ -170,16 +176,17 @@
                     <span id="recordCount" class="text-xs font-bold bg-orange-100 text-noor-700 px-3.5 py-1 rounded-full">0 Records</span>
                 </div>
                 <div class="overflow-x-auto">
-                    <table class="w-full text-left border-collapse min-w-[750px]">
+                    <table class="w-full text-left border-collapse min-w-[800px]">
                         <thead>
                             <tr class="bg-noor-800 text-white text-[11px] uppercase tracking-wider">
+                                <th class="p-3 text-center w-10"><input type="checkbox" id="selectAllCheckbox" onchange="toggleSelectAll(this)" class="rounded cursor-pointer"></th>
                                 <th class="p-3.5 sm:p-4">Doc ID</th>
                                 <th class="p-3.5 sm:p-4">Date</th>
                                 <th class="p-3.5 sm:p-4">Department & Issue To</th>
                                 <th class="p-3.5 sm:p-4">Selected Warehouse</th>
                                 <th class="p-3.5 sm:p-4">Form Type & Purpose</th>
                                 <th class="p-3.5 sm:p-4">Status</th>
-                                <th class="p-3.5 sm:p-4">Last Approval Stage & Approver</th>
+                                <th class="p-3.5 sm:p-4">Last Approval Stage</th>
                                 <th class="p-3.5 sm:p-4 text-center">Actions</th>
                             </tr>
                         </thead>
@@ -234,8 +241,8 @@
                 </div>
 
                 <div class="bg-slate-50 px-4 sm:px-5 py-3 rounded-2xl border border-slate-200/80">
-                    <label class="block text-xs font-bold text-slate-700 mb-1">الطلب لأجل / البيان (Purpose / Remarks) <span class="text-red-500">*</span></label>
-                    <input type="text" id="formPurpose" required placeholder="e.g. Spare parts for Truck #402" 
+                    <label class="block text-xs font-bold text-slate-700 mb-1">الطلب لأجل / البيان (Purpose / Remarks - Auto Generated from Items) <span class="text-red-500">*</span></label>
+                    <input type="text" id="formPurpose" required placeholder="Auto-generated based on item list..." 
                         class="w-full px-4 py-2.5 bg-white border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-noor-500 focus:outline-none">
                 </div>
 
@@ -341,12 +348,10 @@
 
     <!-- JAVASCRIPT SYSTEM LOGIC -->
     <script>
-        // Users DB including Administrator saif.ali@noor.com.sa with full warehouse approval/closing powers
         let usersDb = JSON.parse(localStorage.getItem('noor_users')) || {
             "req@noor.com.sa": { pass: "Noor@123", role: "Requesting", dept: "Service Department", canChangePass: false },
             "workshop@noor.com.sa": { pass: "Noor@123", role: "Requesting", dept: "Transport Workshop", canChangePass: true, workshopOnly: true },
             
-            // Regional Warehouse Users
             "main.wh@noor.com.sa": { pass: "Noor@123", role: "Warehouse", dept: "Main Warehouse", warehouseName: "Main Warehouse", canChangePass: true },
             "south.wh@noor.com.sa": { pass: "Noor@123", role: "Warehouse", dept: "Southern Region Warehouse", warehouseName: "Southern Region Warehouse", canChangePass: true },
             "east.wh@noor.com.sa": { pass: "Noor@123", role: "Warehouse", dept: "Eastern Region Warehouse", warehouseName: "Eastern Region Warehouse", canChangePass: true },
@@ -355,7 +360,6 @@
             "account@noor.com.sa": { pass: "Noor@123", role: "Accounting", dept: "Accounting Department", canChangePass: true },
             "maintenance@noor.com.sa": { pass: "Noor@123", role: "MaintenanceManager", dept: "Maintenance Manager", canChangePass: true },
             
-            // Administrator saif.ali@noor.com.sa with delete-all and warehouse approval/closing powers
             "saif.ali@noor.com.sa": { pass: "72724@Noor", role: "AdminDeleteAll", dept: "System Administrator", canChangePass: true }
         };
 
@@ -522,12 +526,16 @@
             if (menu) menu.classList.toggle('hidden');
         }
 
+        let selectedRequestIds = new Set();
+
         function renderDashboard() {
             const statusFilter = document.getElementById('statusFilter');
             const filter = statusFilter ? statusFilter.value : 'ALL';
             const tbody = document.getElementById('requestsTableBody');
             if (!tbody) return;
             tbody.innerHTML = '';
+            selectedRequestIds.clear();
+            updateBulkApproveButton();
 
             let filtered = requests;
             if (filter !== 'ALL') {
@@ -542,7 +550,7 @@
             if (recordCount) recordCount.innerText = `${filtered.length} Records`;
 
             if (filtered.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="8" class="text-center py-8 text-slate-400 italic">No document records found.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="9" class="text-center py-8 text-slate-400 italic">No document records found.</td></tr>`;
                 return;
             }
 
@@ -556,9 +564,25 @@
                 let canDelete = (currentUser && currentUser.role === 'AdminDeleteAll') || 
                                 (currentUser && currentUser.role === 'Requesting' && req.approverName.toLowerCase() === currentUser.email.toLowerCase() && (req.status === 'Initiated' || req.status === 'In Process') && req.lastStage && req.lastStage.includes('Initiated'));
 
+                // Can select for bulk approval if action is available for current user
+                let canAction = false;
+                if (req.status !== 'Closed' && req.status !== 'Rejected') {
+                    let isAdmin = (currentUser && currentUser.role === 'AdminDeleteAll');
+                    let isRegionalWarehouse = (currentUser && currentUser.role === 'Warehouse' && req.warehouse === currentUser.warehouseName);
+                    let isAssignedReviewer = (currentUser && currentUser.role === 'Accounting' && req.routingTarget === 'Accounting') || 
+                                             (currentUser && currentUser.role === 'MaintenanceManager' && req.routingTarget === 'MaintenanceManager');
+
+                    if ((isRegionalWarehouse || isAssignedReviewer || isAdmin) && req.status !== 'Closed') {
+                        canAction = true;
+                    }
+                }
+
                 let tr = document.createElement('tr');
                 tr.className = "hover:bg-slate-50/80 transition";
                 tr.innerHTML = `
+                    <td class="p-3 text-center">
+                        ${canAction ? `<input type="checkbox" value="${req.id}" onchange="toggleSelectRequest('${req.id}', this)" class="row-select-checkbox rounded cursor-pointer">` : `<span class="text-slate-300">-</span>`}
+                    </td>
                     <td class="p-3.5 sm:p-4 font-bold text-noor-800">${req.id}</td>
                     <td class="p-3.5 sm:p-4 text-slate-600">${req.date}</td>
                     <td class="p-3.5 sm:p-4 font-medium">
@@ -581,6 +605,86 @@
                 `;
                 tbody.appendChild(tr);
             });
+        }
+
+        function toggleSelectRequest(id, checkbox) {
+            if (checkbox.checked) {
+                selectedRequestIds.add(id);
+            } else {
+                selectedRequestIds.delete(id);
+            }
+            updateBulkApproveButton();
+        }
+
+        function toggleSelectAll(selectAllCheckbox) {
+            const checkboxes = document.querySelectorAll('.row-select-checkbox');
+            checkboxes.forEach(cb => {
+                cb.checked = selectAllCheckbox.checked;
+                if (cb.checked) {
+                    selectedRequestIds.add(cb.value);
+                } else {
+                    selectedRequestIds.delete(cb.value);
+                }
+            });
+            updateBulkApproveButton();
+        }
+
+        function updateBulkApproveButton() {
+            const btn = document.getElementById('bulkApproveBtn');
+            const text = document.getElementById('bulkApproveText');
+            if (!btn || !text) return;
+
+            if (selectedRequestIds.size > 0) {
+                btn.classList.remove('hidden');
+                btn.classList.add('inline-flex');
+                text.innerText = `Approve Selected (${selectedRequestIds.size})`;
+            } else {
+                btn.classList.remove('inline-flex');
+                btn.classList.add('hidden');
+            }
+        }
+
+        function bulkApproveSelected() {
+            if (selectedRequestIds.size === 0) return;
+            if (!confirm(`Are you sure you want to approve/advance all ${selectedRequestIds.size} selected documents?`)) return;
+
+            selectedRequestIds.forEach(id => {
+                let req = requests.find(r => r.id === id);
+                if (!req || req.status === 'Closed' || req.status === 'Rejected') return;
+
+                const timestamp = new Date().toLocaleString();
+                let isAdmin = (currentUser && currentUser.role === 'AdminDeleteAll');
+                let isRegionalWarehouse = (currentUser && currentUser.role === 'Warehouse' && req.warehouse === currentUser.warehouseName);
+                let isAssignedReviewer = (currentUser && currentUser.role === 'Accounting' && req.routingTarget === 'Accounting') || 
+                                         (currentUser && currentUser.role === 'MaintenanceManager' && req.routingTarget === 'MaintenanceManager');
+
+                if ((isRegionalWarehouse || isAdmin) && req.lastStage.includes('Initiated')) {
+                    req.status = 'In Process';
+                    req.lastStage = `Availability Checked by Bulk Action -> Pending Manager Review`;
+                    req.approverName = currentUser.email;
+                    req.history.push({ stage: `Warehouse Availability Check (Bulk)`, by: currentUser.email, date: timestamp, note: `Stock confirmed available via bulk approval.` });
+                } else if (isAssignedReviewer && req.lastStage.includes('Availability Checked')) {
+                    req.status = 'Approved';
+                    req.lastStage = `Approved by ${currentUser.dept} -> Ready for ${req.warehouse} Dispatch`;
+                    req.approverName = currentUser.email;
+                    req.history.push({ stage: `${currentUser.dept} Approval (Bulk)`, by: currentUser.email, date: timestamp, note: `Approved via bulk approval.` });
+                } else if ((isRegionalWarehouse || isAdmin) && req.lastStage.includes('Approved by')) {
+                    req.status = 'Closed';
+                    req.lastStage = `Closed & Dispatched by ${req.warehouse} (Final)`;
+                    req.approverName = currentUser.email;
+                    req.history.push({ stage: `${req.warehouse} Dispatch / Closed (Bulk)`, by: currentUser.email, date: timestamp, note: `Finalized via bulk approval.` });
+                } else if (isAdmin) {
+                    req.status = 'Closed';
+                    req.lastStage = `Closed by Admin Bulk Override`;
+                    req.approverName = currentUser.email;
+                    req.history.push({ stage: `Admin Bulk Close`, by: currentUser.email, date: timestamp, note: `Closed via admin bulk override.` });
+                }
+            });
+
+            localStorage.setItem('noor_requests', JSON.stringify(requests));
+            selectedRequestIds.clear();
+            renderDashboard();
+            alert("Selected documents successfully processed and advanced!");
         }
 
         function openFormModal(formTypeName) {
@@ -630,6 +734,7 @@
             const tbody = document.getElementById('formItemsTableBody');
             if (tbody) tbody.innerHTML = '';
             addItemRow();
+            updateAutoDescription();
         }
 
         function closeFormModal() {
@@ -644,14 +749,15 @@
             tr.className = "border-b item-row";
             tr.innerHTML = `
                 <td class="p-2.5 font-bold row-idx">${tbody.children.length + 1}</td>
-                <td class="p-2.5"><input type="text" required class="item-name w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-noor-500 focus:bg-white focus:outline-none" placeholder="Item Name"></td>
+                <td class="p-2.5"><input type="text" required oninput="updateAutoDescription()" class="item-name w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-noor-500 focus:bg-white focus:outline-none" placeholder="Item Name"></td>
                 <td class="p-2.5"><input type="text" class="item-code w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-noor-500 focus:bg-white focus:outline-none" placeholder="Code"></td>
                 <td class="p-2.5"><input type="text" required class="item-unit w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-noor-500 focus:bg-white focus:outline-none" placeholder="Unit"></td>
-                <td class="p-2.5"><input type="number" min="1" value="1" required class="item-qty w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs text-center font-bold focus:ring-2 focus:ring-noor-500 focus:bg-white focus:outline-none"></td>
+                <td class="p-2.5"><input type="number" min="1" value="1" required oninput="updateAutoDescription()" class="item-qty w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs text-center font-bold focus:ring-2 focus:ring-noor-500 focus:bg-white focus:outline-none"></td>
                 <td class="p-2.5"><input type="text" class="item-notes w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-noor-500 focus:bg-white focus:outline-none" placeholder="Notes"></td>
-                <td class="p-2.5"><button type="button" onclick="this.closest('tr').remove(); renumberRows();" class="text-red-400 hover:text-red-700 font-bold p-1.5 rounded-lg hover:bg-red-50 transition"><i class="fa-solid fa-xmark"></i></button></td>
+                <td class="p-2.5"><button type="button" onclick="this.closest('tr').remove(); renumberRows(); updateAutoDescription();" class="text-red-400 hover:text-red-700 font-bold p-1.5 rounded-lg hover:bg-red-50 transition"><i class="fa-solid fa-xmark"></i></button></td>
             `;
             tbody.appendChild(tr);
+            updateAutoDescription();
         }
 
         function renumberRows() {
@@ -659,6 +765,26 @@
                 const idxEl = row.querySelector('.row-idx');
                 if (idxEl) idxEl.innerText = idx + 1;
             });
+        }
+
+        function updateAutoDescription() {
+            const purposeInput = document.getElementById('formPurpose');
+            if (!purposeInput) return;
+
+            let itemSummaries = [];
+            document.querySelectorAll('#formItemsTableBody .item-row').forEach(row => {
+                const name = row.querySelector('.item-name').value.trim();
+                const qty = row.querySelector('.item-qty').value.trim() || '1';
+                if (name) {
+                    itemSummaries.push(`${qty}x ${name}`);
+                }
+            });
+
+            if (itemSummaries.length > 0) {
+                purposeInput.value = `Requisition for: ${itemSummaries.join(', ')}`;
+            } else {
+                purposeInput.value = '';
+            }
         }
 
         function submitFormRequisition(e) {
